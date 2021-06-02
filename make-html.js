@@ -1,13 +1,8 @@
-// let testVar = 'passed';
-// let xmlContent = '';
 let tableFilms = document.getElementById('filmstab');
-// fetch(xmlLocation, {mode : 'no-cors'}).then((response)=> {
-//     response.text().then((xml)=>{
-//         xmlContent = xml;
-//         console.log(xmlContent);
 let parser = new DOMParser();
 let xmlDOM = parser.parseFromString(acp.xmlContent, 'application/xml');
 let films = xmlDOM.querySelectorAll('films');
+var filmArr = [];
 
 films.forEach(filmsNode => {
     filmsNode.querySelectorAll('film').forEach(film => {
@@ -34,12 +29,10 @@ films.forEach(filmsNode => {
         td = document.createElement('td');
         td.innerText = film.getAttribute('acteurs');
         row.appendChild(td);
-        tableFilms.children[1].appendChild(row);
 
         td = document.createElement('td');
         td.innerText = film.getAttribute('synopsis');
         row.appendChild(td);
-        tableFilms.children[1].appendChild(row);
 
         td = document.createElement('td');
         td.style = "min-width: 20%;";
@@ -53,12 +46,64 @@ films.forEach(filmsNode => {
         a.target = "_blank";
         td.appendChild(a);
         row.appendChild(td);
-        tableFilms.children[1].appendChild(row);
+
+        td = document.createElement('td');
+        td.innerText = film.childNodes[1].innerHTML;
+        td.date = td.innerText;
+        row.appendChild(td);
+
+        filmArr.push(row);
     });
 
 
 });
-        
-//     });
-// });
 
+var i;
+var dates = [];
+var flag;
+
+for(i = 0; i < filmArr.length; i++)
+{
+    dates = filmArr[i].childNodes[6].innerHTML.split(";");
+    var dateStr = [];
+    var dateStr2 = [];
+    dates.forEach( date => {
+        // Convert the xml date into a usable one 
+        dateStr = date.split(" "); 
+        dateStr2 = dateStr[0].split("-");
+        date = dateStr2[2] + "-" + dateStr2[1] + "-" + dateStr2[0] + "T" + dateStr[1];
+
+        // Compare if the current date if earlier than the diffusion one
+        if(new Date().getTime() < new Date(date).getTime())
+        {
+            // Set a flag to indicate that there's still diffusion one into the future
+            flag = true;
+        }
+    })
+    // If all the date are already past then delete the useless row
+    if(!flag)
+    {
+        filmArr.splice(i, 1);
+    }
+}
+
+for(i = 0; i < filmArr.length; i++)
+{
+    let j;
+    for(j = 0; j < filmArr.length; j++)
+    {
+        if(i != j)
+        {
+            // compare based on the title
+            if(filmArr[i].childNodes[2].innerHTML == filmArr[j].childNodes[2].innerHTML)
+            {
+                filmArr[i].childNodes[6].innerHTML += ";" + filmArr[j].childNodes[6].innerHTML;
+                filmArr.splice(j,1);
+            }
+        }
+    }
+}
+
+filmArr.forEach(film => {
+    tableFilms.children[1].appendChild(film);
+});

@@ -9,7 +9,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Allocine Process
- * Plugin URI:        https://example.com/plugin-name
+ * Plugin URI:        https://github.com/The-Last-Resort-FR/AllocineWordPressPlugin
  * Description:       Get the data from Allocine and process it into various forms
  * Version:           1.0.0
  * Requires at least: 5.2
@@ -21,13 +21,12 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 */
 
+// Exit if not called by WordPress
 if (!defined('ABSPATH')) 
 {
     exit;
 }
 
-define( 'ACP_PATH', dirname(__FILE__));
-define( 'ACP_PATH_URL', plugins_url(__FILE__));
 
 function acp_get_xml_info() 
 {
@@ -39,6 +38,8 @@ function acp_get_xml_info()
 
 }
 
+
+// build the array
 function acp_make_xml_infos( $XMLI ) 
 {
 
@@ -46,7 +47,7 @@ function acp_make_xml_infos( $XMLI )
 		'id'                => 'xml_url',
 		'label'             => __( 'XML URL', 'allocine-process' ),
 		'class'             => 'XML',
-		'description'       => __( 'Enter the XML URL', 'allocine-process' ),
+		'description'       => __( 'Entrer l\'url du fichier xml ', 'allocine-process' ),
 		'priority'          => 10,
 		'type'              => 'text',
 		'default'           => '',
@@ -58,7 +59,7 @@ function acp_make_xml_infos( $XMLI )
 
 add_filter( 'acp_xml_infos', 'acp_make_xml_infos', 10, 1 );
 
-
+// add the entry to the wp customize menu
 function acp_xml_customizer_settings( $wp_customize ) 
 {
  
@@ -68,8 +69,7 @@ function acp_xml_customizer_settings( $wp_customize )
 		$wp_customize->add_section(
             'allocine_process',
             array(
-                'title'          => __( 'xml location' ),
-                'description'    => __( 'put the allocine xml file path here' ),
+                'title'          => __( 'URL du fichier XML Allociné' ),
                 'priority'       => 160,
                 'capability'     => 'edit_theme_options',
             )
@@ -98,6 +98,7 @@ function acp_xml_customizer_settings( $wp_customize )
 
 add_action( 'customize_register', 'acp_xml_customizer_settings' );
 
+// register the script for the shortcode
 function acp_scripts() {
     wp_register_script("make-html", plugin_dir_url( __FILE__ ) . '/make-html.js', array(), '1.0.0', true);
     wp_enqueue_script( "make-html");
@@ -105,22 +106,16 @@ function acp_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'acp_scripts' );
 
+
+// function called by the shortcode
 function acp_shortcode_call()
 {
+    $XML = acp_get_xml_info();
     wp_localize_script('make-html', 'acp', array( 
-        'xmlContent'=> file_get_contents("https://api.levox.fr/allocineseances.xml"),
+        'xmlContent'=> file_get_contents(get_theme_mod($XML['id'])),
         ) 
     );
-    // $url = 'https://api.levox.fr/allocineseances.xml';
-    // $file_name = basename($url);
-    // file_put_contents( 'wp-content/plugins/allocine-process/' . $file_name,file_get_contents($url));
-    $XML = acp_get_xml_info();
-    $content .= file_get_contents("widget.html", true);
-    // $content .= "<script>\n";
-    // $content .= "let xmlLocation = \"" . get_theme_mod($XML['id']) . "\";\n";
-    // $content .= file_get_contents("make-html.js", true);
-    // $content .= "</script>\n";
-    return $content;
+    return file_get_contents("widget.html", true);
 }
 
 add_shortcode('acpsc', 'acp_shortcode_call');
