@@ -61,7 +61,7 @@ add_filter( 'acp_xml_infos', 'acp_make_xml_infos', 10, 1 );
 
 function acp_xml_customizer_settings( $wp_customize ) 
 {
-
+ 
     $xml_infos = acp_get_xml_info();
 
     if ( ! empty( $xml_infos ) ) {
