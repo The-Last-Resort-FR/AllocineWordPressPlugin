@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.2] - 2021-06-07
+
+### Changed
+
+- rework of the xml data aquisition 
+
 ## [1.0.1] - 2021-06-02
 
 ### Added

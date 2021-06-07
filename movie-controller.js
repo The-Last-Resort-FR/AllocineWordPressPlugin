@@ -102,6 +102,11 @@ var movieController = {
     },
     show: function (){
         console.log(this.films["02/06/2021"].get("264648")["title"]);
+        this.films.forEach(filmpack => {
+            filmpack.forEach(films => {
+                console.log(film["title"]);
+            });
+        });
     }
 }
 
