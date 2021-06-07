@@ -1,9 +1,31 @@
+var tlrUtil = {
+    XmlDateStringToJsDate: function(date){
+        let dateStr = [];
+        let dateStr2 = [];
+        dateStr = date.split(" "); 
+        dateStr2 = dateStr[0].split("-");
+        return dateStr2[2] + "-" + dateStr2[1] + "-" + dateStr2[0] + "T" + dateStr[1];
+    },
+
+    XmlDateToFRDate: function(date){
+        let dateStr = [];
+        let dateStr2 = [];
+        let dateStr3 = [];
+        dateStr = date.split(" "); 
+        dateStr2 = dateStr[0].split("-");
+        dateStr3 = dateStr[1].split(":");
+        return dateStr2[0] + "/" + dateStr2[1] + "/" + dateStr2[2] + " à " + dateStr3[0] + "h" + dateStr3[1];
+    }
+}
+
 let tableFilms = document.getElementById('filmstab');
 let parser = new DOMParser();
 let xmlDOM = parser.parseFromString(acp.xmlContent, 'application/xml');
 let films = xmlDOM.querySelectorAll('films');
 var filmArr = [];
 
+
+// Make all the rows from the XML file
 films.forEach(filmsNode => {
     filmsNode.querySelectorAll('film').forEach(film => {
         let row = document.createElement('tr');
@@ -62,21 +84,17 @@ var i;
 var dates = [];
 var flag;
 
+// Checks and remove the outdated rows
 for(i = 0; i < filmArr.length; i++)
 {
     dates = filmArr[i].childNodes[6].innerHTML.split(";");
     var dateStr = [];
     var dateStr2 = [];
     dates.forEach( date => {
-        // Convert the xml date into a usable one 
-        dateStr = date.split(" "); 
-        dateStr2 = dateStr[0].split("-");
-        date = dateStr2[2] + "-" + dateStr2[1] + "-" + dateStr2[0] + "T" + dateStr[1];
-
         // Compare if the current date if earlier than the diffusion one
-        if(new Date().getTime() < new Date(date).getTime())
+        if(new Date().getTime() < new Date(tlrUtil.XmlDateStringToJsDate(date)).getTime())
         {
-            // Set a flag to indicate that there's still diffusion one into the future
+            // Set a flag to indicate that there's still diffusion into the future
             flag = true;
         }
     })
@@ -87,6 +105,7 @@ for(i = 0; i < filmArr.length; i++)
     }
 }
 
+// Remove the duplicated enties and merges the dates
 for(i = 0; i < filmArr.length; i++)
 {
     let j;
@@ -94,7 +113,7 @@ for(i = 0; i < filmArr.length; i++)
     {
         if(i != j)
         {
-            // compare based on the title
+            // Compare based on the title
             if(filmArr[i].childNodes[2].innerHTML == filmArr[j].childNodes[2].innerHTML)
             {
                 filmArr[i].childNodes[6].innerHTML += ";" + filmArr[j].childNodes[6].innerHTML;
@@ -104,6 +123,7 @@ for(i = 0; i < filmArr.length; i++)
     }
 }
 
+// Output the remaining rows
 filmArr.forEach(film => {
     tableFilms.children[1].appendChild(film);
 });
