@@ -55,8 +55,12 @@ films.get(id).weeks[0].J3 -> ['16h30', 18h']
 // methode de chargement des comportement
 */
 
-
-
+jQuery('document').ready(function () {
+    movieController.init();
+    movieController.loadBehaviours();
+    movieController.loadModel();
+    movieController.show();
+});
 
 var movieController = {
 
@@ -101,16 +105,12 @@ var movieController = {
         });
     },
     show: function (){
-        console.log(this.films["02/06/2021"].get("264648")["title"]);
-        this.films.forEach(filmpack => {
-            filmpack.forEach(films => {
-                console.log(film["title"]);
-            });
+        //console.log(this.films["02/06/2021"].get("264648")["title"]);
+        movieController.films.forEach(filmpack => {
+            filmpack.forEach(film => {
+                console.log(film.title);
+            })
         });
     }
 }
 
-movieController.init();
-movieController.loadBehaviours();
-movieController.loadModel();
-movieController.show();

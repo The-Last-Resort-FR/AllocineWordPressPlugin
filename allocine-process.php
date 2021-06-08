@@ -100,6 +100,7 @@ add_action( 'customize_register', 'acp_xml_customizer_settings' );
 
 // register the script for the shortcode
 function acp_scripts() {
+    wp_enqueue_script('jquery');
     wp_register_script("make-html", plugin_dir_url( __FILE__ ) . '/make-html.js', array(), '1.0.0', true);
     wp_enqueue_script( "make-html");
     wp_register_script("tlr-utilities", plugin_dir_url( __FILE__ ) . '/tlr-utilities.js', array(), '1.0.0', true);
