@@ -19,11 +19,11 @@ Just gather data from the Allociné exorted xml and display it with a shortcode.
   - Go into the WordPress plugin's folder.
   
     For windows :
-    `cd C:\MAMP\htdocs\wp-content\plugins`
+    ```cd C:\MAMP\htdocs\wp-content\plugins```
 
   - Clone the repository in it.
 
-  `git clone https://github.com/The-Last-Resort-FR/AllocineWordPressPlugin`
+    ```git clone https://github.com/The-Last-Resort-FR/AllocineWordPressPlugin```
 
   - Go into the WordPress administration dashboard and look for the installed plugin menu.
   
