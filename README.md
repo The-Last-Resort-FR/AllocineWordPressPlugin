@@ -19,13 +19,13 @@ Just gather data from the Allociné exorted xml and display it with a shortcode.
   - Go into the WordPress plugin's folder.
   
     For windows :
-    ```powershell 
+    ```bash
     cd C:\MAMP\htdocs\wp-content\plugins
     ```
 
   - Clone the repository in it.
 
-    ```powershell
+    ```bash
     git clone https://github.com/The-Last-Resort-FR/AllocineWordPressPlugin
     ```
 
