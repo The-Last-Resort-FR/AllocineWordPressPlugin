@@ -1,5 +1,28 @@
 # Change Log
 
+## [1.1.0] - 2021-06-02
+
+### Changed
+
+- Films are now stored into a class
+- Films are sotred accordingly to their diffusion week
+- XML passed in base64
+
+### Added
+
+- Week selection dropdown menu
+- Proper install instructions
+
+### Removed
+
+- The old make-html.js
+
+## [1.0.2] - 2021-06-07
+
+### Changed
+
+- rework of the xml data aquisition 
+
 ## [1.0.1] - 2021-06-02
 
 ### Added

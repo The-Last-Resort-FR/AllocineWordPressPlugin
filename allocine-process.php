@@ -100,8 +100,13 @@ add_action( 'customize_register', 'acp_xml_customizer_settings' );
 
 // register the script for the shortcode
 function acp_scripts() {
-    wp_register_script("make-html", plugin_dir_url( __FILE__ ) . '/make-html.js', array(), '1.0.0', true);
-    wp_enqueue_script( "make-html");
+    wp_enqueue_script('jquery');
+    //wp_register_script("make-html", plugin_dir_url( __FILE__ ) . '/make-html.js', array(), '1.0.0', true);
+    //wp_enqueue_script( "make-html");
+    wp_register_script("tlr-utilities", plugin_dir_url( __FILE__ ) . '/tlr-utilities.js', array(), '1.0.0', true);
+    wp_enqueue_script( "tlr-utilities");
+    wp_register_script("movie-controller", plugin_dir_url( __FILE__ ) . '/movie-controller.js', array(), '1.0.0', true);
+    wp_enqueue_script( "movie-controller");
     //wp_enqueue_style("make-html");
 }
 add_action( 'wp_enqueue_scripts', 'acp_scripts' );
@@ -111,9 +116,14 @@ add_action( 'wp_enqueue_scripts', 'acp_scripts' );
 function acp_shortcode_call()
 {
     $XML = acp_get_xml_info();
-    wp_localize_script('make-html', 'acp', array( 
-        'xmlContent'=> file_get_contents(get_theme_mod($XML['id'])),
-        ) 
+    $data = file_get_contents(get_theme_mod($XML['id']));
+    //wp_localize_script('make-html', 'acp', array( 
+    //    'xmlContent'=> $data,
+    //    ) 
+    //);    
+    wp_localize_script('movie-controller', 'acp', array( 
+        'xmlContent'=> base64_encode($data),
+        )
     );
     return file_get_contents("widget.html", true);
 }
