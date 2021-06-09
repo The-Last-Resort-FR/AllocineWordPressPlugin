@@ -1,3 +1,29 @@
+var tlrUtil = {
+    XmlDateStringToJsDate: function (date) {
+        let dateStr = [];
+        let dateStr2 = [];
+        dateStr = date.split(" ");
+        dateStr2 = dateStr[0].split("-");
+        return dateStr2[2] + "-" + dateStr2[1] + "-" + dateStr2[0] + "T" + dateStr[1];
+    },
+
+    XmlDateToFRDate: function (date) {
+        let dateStr = [];
+        let dateStr2 = [];
+        let dateStr3 = [];
+        dateStr = date.split(" ");
+        dateStr2 = dateStr[0].split("-");
+        dateStr3 = dateStr[1].split(":");
+        return dateStr2[0] + "/" + dateStr2[1] + "/" + dateStr2[2] + " à " + dateStr3[0] + "h" + dateStr3[1];
+    },
+    encode_utf8: function (s) {
+        return unescape(encodeURIComponent(s));
+    },
+    decode_utf8: function (s) {
+        return decodeURIComponent(escape(s));
+    }
+}
+
 /* en plus 
 CamilleTools.js
 CamilleTools.convertDateToString(new Date());-> '02/06/2021'
@@ -59,7 +85,7 @@ jQuery('document').ready(function () {
     movieController.init();
     movieController.loadBehaviours();
     movieController.loadModel();
-    movieController.show();
+    movieController.showWeek(jQuery('#week-selector').index());
 });
 
 var movieController = {
@@ -69,47 +95,115 @@ var movieController = {
 
     weeks: [],
     weekIndex: 0,
-    films: new Map(),
+    films: [],
+    nbFilms: 0,
 
-    init: function(){
+    init: function () {
         this.parser = new DOMParser();
-        this.xmlDOM = this.parser.parseFromString(acp.xmlContent, 'application/xml');
+        this.xmlDOM = this.parser.parseFromString(atob(acp.xmlContent), 'application/xml');
         let weekTmp = this.xmlDOM.querySelectorAll('semaine');
         weekTmp.forEach(element => {
             this.weeks.push(
                 element.getAttribute('date')
             );
         });
+        this.showDateSelector();
     },
-    loadBehaviours: function(){
+    showDateSelector: function () {
+        selection = jQuery('#week-selector');
+        selection.empty();
+
+        movieController.weeks.forEach(function (week) {
+            selection.append('<option value="' + week + '">' + week + '</option>');
+        })
+
     },
-    loadModel: function(){
+    loadBehaviours: function () {
+
+        jQuery('#week-selector').change(function () {
+            movieController.showWeek(document.getElementById("week-selector").options.selectedIndex);
+        });
+
+    },
+    loadModel: function () {
         var films = this.xmlDOM.querySelectorAll('films');
         films.forEach((filmsNode, index) => {
-            this.films[this.weeks[index]] = new Map();
-            var array = this.films[this.weeks[index]]
+
+            this.nbFilms++;
+            this.films[this.nbFilms - 1] = new Map();
             filmsNode.querySelectorAll('film').forEach(film => {
-                array.set(film.getAttribute('id'),{
-                    title: film.getAttribute('titre'),
+                this.films[this.nbFilms - 1].set(film.getAttribute('id'), {
+                    title: tlrUtil.decode_utf8(film.getAttribute('titre')),
                     img: film.getAttribute('affichette'),
-                    director: film.getAttribute('realisateurs'),
-                    actor: film.getAttribute('acteurs'),
-                    sumup: film.getAttribute('synopsis'),
+                    director: tlrUtil.decode_utf8(film.getAttribute('realisateurs')),
+                    actor: tlrUtil.decode_utf8(film.getAttribute('acteurs')),
+                    sumup: tlrUtil.decode_utf8(film.getAttribute('synopsis')),
                     prodYear: film.getAttribute('anneeproduction'),
                     releaseDate: film.getAttribute('datesortie'),
                     duration: film.getAttribute('duree'),
-                    nationality: film.getAttribute('nationalite'),
+                    nationality: tlrUtil.decode_utf8(film.getAttribute('nationalite')),
+                    dates: film.childNodes[1].innerHTML,
                     video: "http://player.allocine.fr/" + film.getAttribute('video') + ".html",
                 });
             });
         });
     },
-    show: function (){
-        //console.log(this.films["02/06/2021"].get("264648")["title"]);
-        movieController.films.forEach(filmpack => {
-            filmpack.forEach(film => {
-                console.log(film.title);
-            })
+    showWeek: function (index) {
+        var filmPack = movieController.films[index];
+        let tableFilms = document.getElementById('filmstab');
+        tableFilms.innerHTML = "\n<thead>\n<tr>\n<th>Affiche</th>\n<th>Titre</th>\n<th>Réalistateur</th>\n<th>Acteurs</th>\n<th>Synopsis</th>\n<th>Dates</th>\n<th style=\"min-width: 20%;\">Informations</th>\n</tr>\n</thead>\n<tbody>\n\n</tbody>\n";
+        filmPack.forEach(film => {
+            //console.log(film.title);
+            let row = document.createElement('tr');
+
+            // affiche
+            let td = document.createElement('td');
+            img = document.createElement('img');
+            img.src = film.img;
+            td.appendChild(img);
+            row.appendChild(td);
+
+            //  Titre
+            td = document.createElement('td');
+            td.innerText = film.title;
+            row.appendChild(td);
+
+            // Réalistateur
+            td = document.createElement('td');
+            td.innerText = film.director;
+            row.appendChild(td);
+
+            // Acteurs
+            td = document.createElement('td');
+            td.innerText = film.actor;
+            row.appendChild(td);
+
+            // Synopsis
+            td = document.createElement('td');
+            td.innerText = film.sumup;
+            row.appendChild(td);
+            
+            // dates
+            td = document.createElement('td');
+            td.innerText = film.dates;
+            td.date = td.innerText;
+            row.appendChild(td);
+
+            // Info
+            td = document.createElement('td');
+            td.innerText = "Année de production : " + film.prodYear + '\n' +
+                "Date de sortie : " + film.releaseDate + '\n' +
+                "Durée : " + film.duration + '\n' +
+                "Nationalité : " + film.nationality + '\n';
+            a = document.createElement('a');
+            a.href = film.video;
+            a.innerText = "Cliquez ici pour voir la bande annonce";
+            a.target = "_blank";
+            td.appendChild(a);
+            row.appendChild(td);
+
+
+            tableFilms.appendChild(row);
         });
     }
 }
