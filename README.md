@@ -18,8 +18,8 @@ Just gather data from the Allociné exorted xml and display it with a shortcode.
 
   - Go into the WordPress plugin's folder.
   
-  For windows :
-  `cd C:\MAMP\htdocs\wp-content\plugins`
+    For windows :
+    `cd C:\MAMP\htdocs\wp-content\plugins`
 
   - Clone the repository in it.
 
