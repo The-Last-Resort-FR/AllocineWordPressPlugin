@@ -107,6 +107,7 @@ function acp_scripts() {
     wp_enqueue_script( "tlr-utilities");
     wp_register_script("movie-controller", plugin_dir_url( __FILE__ ) . '/movie-controller.js', array(), '1.0.0', true);
     wp_enqueue_script( "movie-controller");
+    wp_enqueue_style("list", "http://localhost/wp-content/plugins/allocine-process/list.css");
     //wp_enqueue_style("make-html");
 }
 add_action( 'wp_enqueue_scripts', 'acp_scripts' );
@@ -125,7 +126,7 @@ function acp_shortcode_call()
         'xmlContent'=> base64_encode($data),
         )
     );
-    return file_get_contents("widget.html", true);
+    return file_get_contents("list.html", true);
 }
 
 add_shortcode('acpsc', 'acp_shortcode_call');

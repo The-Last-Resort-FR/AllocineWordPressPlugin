@@ -1,6 +1,17 @@
 # Change Log
 
-## [1.1.0] - 2021-06-02
+## [1.1.1] - 2021-06-14
+
+### Changed
+
+- Films are now displayed in a list according to the selected week
+
+### Added
+
+- Data manipulation and conversion tools
+- HTML and CSS for the list display
+
+## [1.1.0] - 2021-06-11
 
 ### Changed
 

@@ -1,4 +1,25 @@
 var tlrUtil = {
+    dbg: "",
+    daysToInt: new Map(),
+    IntToDays: ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"],
+    IntToDaysFR: ["Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche", "Lundi", "Mardi"],
+
+    MakeDays: function () {
+        this.daysToInt.set("Wed", 0);
+        this.daysToInt.set("Thu", 1);
+        this.daysToInt.set("Fri", 2);
+        this.daysToInt.set("Sat", 3);
+        this.daysToInt.set("Sun", 4);
+        this.daysToInt.set("Mon", 5);
+        this.daysToInt.set("Tue", 6);
+    },
+
+    XmlHourToFr: function (hour) {
+        let tmp = hour.split(":")
+        return tmp[0] + "h" + tmp[1];
+    },
+
+    //[ "Wed", "Thu", "Fri", "Sat", "Sun", "Mon","Tue" ]
     XmlDateStringToJsDate: function (date) {
         let dateStr = [];
         let dateStr2 = [];
@@ -16,21 +37,54 @@ var tlrUtil = {
         dateStr3 = dateStr[1].split(":");
         return dateStr2[0] + "/" + dateStr2[1] + "/" + dateStr2[2] + " à " + dateStr3[0] + "h" + dateStr3[1];
     },
+
     encode_utf8: function (s) {
         return unescape(encodeURIComponent(s));
     },
+
     decode_utf8: function (s) {
         return decodeURIComponent(escape(s));
+    },
+
+    PrepareDates: function (date) {
+        // 02-06-2021 14:00:00;02-06-2021 16:15:00;06-06-2021 11:00:00
+        let dates = [];
+        let datesTmp = date.split(";");
+        datesTmp.forEach(d => {
+            let tmp = new Date(this.XmlDateStringToJsDate(d)).toDateString();
+            let splited = tmp.split(" ");
+            let tmp2 = this.daysToInt.get(splited[0]);
+            let hour = d.split(" ");
+            if (dates[tmp2] == null) {
+                dates[tmp2] = this.XmlHourToFr(hour[1]);
+            }
+            else {
+                dates[tmp2] += ';' + this.XmlHourToFr(hour[1]);
+            }
+        });
+
+        return dates;
     }
+
+
 }
+tlrUtil.MakeDays();
+
+
+
+
+
 
 
 
 jQuery('document').ready(function () {
+
     movieController.init();
-    movieController.loadBehaviours();
+    //movieController.loadBehaviours();
+    movieController.WeekSelector();
     movieController.loadModel();
-    movieController.showWeek(jQuery('#week-selector').index());
+    movieController.ShowList(0);
+    //movieController.showWeek(jQuery('#week-selector').index());
 });
 
 var movieController = {
@@ -70,6 +124,13 @@ var movieController = {
         });
 
     },
+    WeekSelector: function () {
+
+        jQuery('#week-selector').change(function () {
+            movieController.ShowList(document.getElementById("week-selector").options.selectedIndex);
+        });
+
+    },
     loadModel: function () {
         var films = this.xmlDOM.querySelectorAll('films');
         films.forEach((filmsNode, index) => {
@@ -79,6 +140,7 @@ var movieController = {
             filmsNode.querySelectorAll('film').forEach(film => {
                 this.films[this.nbFilms - 1].set(film.getAttribute('id'), {
                     title: tlrUtil.decode_utf8(film.getAttribute('titre')),
+                    id: film.getAttribute('id'),
                     img: film.getAttribute('affichette'),
                     director: tlrUtil.decode_utf8(film.getAttribute('realisateurs')),
                     actor: tlrUtil.decode_utf8(film.getAttribute('acteurs')),
@@ -87,10 +149,12 @@ var movieController = {
                     releaseDate: film.getAttribute('datesortie'),
                     duration: film.getAttribute('duree'),
                     nationality: tlrUtil.decode_utf8(film.getAttribute('nationalite')),
-                    dates: film.childNodes[1].innerHTML,
+                    date: film.childNodes[1].innerHTML,
+                    dates: tlrUtil.PrepareDates(film.childNodes[1].innerHTML),
                     video: "http://player.allocine.fr/" + film.getAttribute('video') + ".html",
                 });
             });
+
         });
     },
     showWeek: function (index) {
@@ -127,10 +191,10 @@ var movieController = {
             td = document.createElement('td');
             td.innerText = film.sumup;
             row.appendChild(td);
-            
+
             // dates
             td = document.createElement('td');
-            td.innerText = film.dates;
+            td.innerText = film.date;
             td.date = td.innerText;
             row.appendChild(td);
 
@@ -150,6 +214,72 @@ var movieController = {
 
             tableFilms.appendChild(row);
         });
+    },
+
+    ShowDay: function (index, filmId, elementId, week) {
+        console.log("day: " + index + "   Filmid : " + filmId + "   elementId : " + elementId + "   week : " + week);
+        let hours = document.getElementById(elementId + "h");
+        let tmp = movieController.films[week].get(filmId).dates[index];
+        console.log(tmp);
+        hours.innerHTML = "";
+        if (tmp != null) {
+            let tmp2 = tmp.split(";");
+            tmp2.forEach(hour => {
+                let row = document.createElement("p");
+                row.innerText = hour;
+                hours.appendChild(row);
+            });
+        }
+        else {
+            let row = document.createElement("p");
+            row.innerText = "Pas d'horaires prévus à ce jour";
+            hours.appendChild(row);
+        }
+    },
+
+    ShowList: function (index) {
+        var filmPack = movieController.films[index];
+        var mosaic = document.getElementById("mosaic");
+        mosaic.innerHTML = "";
+        filmPack.forEach(film => {
+            let entry = document.createElement("div");
+            entry.classList.add("entry");
+            entry.id = film.title.replaceAll(" ", "");
+
+
+
+            let cover = document.createElement("div");
+            let img = document.createElement("img");
+            img.src = film.img;
+            cover.classList.add("cover");
+            cover.appendChild(img);
+
+
+
+            let dates = document.createElement("div");
+            dates.classList.add("dates");
+
+            let days = document.createElement("div");
+            days.classList.add("days");
+            let i = 0;
+            for (i = 0; i <= 6; i++) {
+                let button = document.createElement("button");
+                button.innerText = tlrUtil.IntToDaysFR[i];
+                let abc = i;
+                button.addEventListener("click", function () { movieController.ShowDay(abc, film.id, entry.id, index); }, false);
+                days.appendChild(button);
+            }
+            let hours = document.createElement("div");
+            hours.classList.add("hours");
+            hours.id = film.title.replaceAll(" ", "") + "h";
+            hours.innerText = "Cliquer sur un jour pour voir la programmation de celui ci";
+
+
+            dates.appendChild(days);
+            dates.appendChild(hours);
+            entry.appendChild(cover);
+            entry.appendChild(dates);
+            mosaic.appendChild(entry);
+        });
     }
 }
-
