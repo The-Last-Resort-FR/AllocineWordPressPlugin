@@ -46,23 +46,89 @@ var tlrUtil = {
         return decodeURIComponent(escape(s));
     },
 
-    PrepareDates: function (date) {
+    PrepareDates: function (date, vo, lang) {
         // 02-06-2021 14:00:00;02-06-2021 16:15:00;06-06-2021 11:00:00
         let dates = [];
-        let datesTmp = date.split(";");
+        let senario = 0;
+        let langs = lang.split("|");
+        let voFirst;
+        if(vo == "0|1") {
+            senario = 1;
+            voFirst = false;
+        } 
+        else if(vo == "1|0") {
+            senario = 2;
+            voFirst = true;
+        }
+        else if(vo == "0") senario = 3;
+        else if(vo == "1") senario = 4;
+
+        let datesLang = date.split("|");
+        let datesTmp = datesLang[0].split(";");
+        let datesTmp2
+        if (datesLang[1] != null)
+        {
+            datesTmp2 = datesLang[1].split(";");
+        }
         datesTmp.forEach(d => {
             let tmp = new Date(this.XmlDateStringToJsDate(d)).toDateString();
             let splited = tmp.split(" ");
             let tmp2 = this.daysToInt.get(splited[0]);
             let hour = d.split(" ");
             if (dates[tmp2] == null) {
-                dates[tmp2] = this.XmlHourToFr(hour[1]);
+                if(voFirst != null && voFirst == true){
+                    dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                }
+                else if(voFirst != null && voFirst == false){
+                    dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]);
+                }
+                else if(voFirst == null) {
+                    dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]);
+                }
             }
             else {
-                dates[tmp2] += ';' + this.XmlHourToFr(hour[1]);
+                if(voFirst != null && voFirst == true){
+                    dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                }
+                else if(voFirst != null && voFirst == false){
+                    dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]);
+                }
+                else if(voFirst == null) {
+                    dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]);
+                }
             }
         });
-
+        if (datesLang[1] != null)
+        {
+            datesTmp2.forEach(d => {
+                let tmp = new Date(this.XmlDateStringToJsDate(d)).toDateString();
+                let splited = tmp.split(" ");
+                let tmp2 = this.daysToInt.get(splited[0]);
+                let hour = d.split(" ");
+                if (dates[tmp2] == null) {
+                    if(voFirst != null && voFirst == false){
+                        dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                    }
+                    else if(voFirst != null && voFirst == true){
+                        dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]);
+                    }
+                    else if(voFirst == null) {
+                        dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]);
+                    }
+                }
+                else {
+                    if(voFirst != null && voFirst == false){
+                        dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                    }
+                    else if(voFirst != null && voFirst == true){
+                        dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]);
+                    }
+                    else if(voFirst == null) {
+                        dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]);
+                    }
+                }
+            });
+        }
         return dates;
     }
 
@@ -91,6 +157,7 @@ var movieController = {
 
     parser: '',
     xmlDOM: '',
+    ev: new Event("unclick"),
 
     weeks: [],
     weekIndex: 0,
@@ -149,8 +216,10 @@ var movieController = {
                     releaseDate: film.getAttribute('datesortie'),
                     duration: film.getAttribute('duree'),
                     nationality: tlrUtil.decode_utf8(film.getAttribute('nationalite')),
-                    date: film.childNodes[1].innerHTML,
-                    dates: tlrUtil.PrepareDates(film.childNodes[1].innerHTML),
+                    date: film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : ""),
+                    dates: tlrUtil.PrepareDates(film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : ""),film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): ""), tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): ""))),
+                    vo: film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): ""),
+                    lang: tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): "")),
                     video: "http://player.allocine.fr/" + film.getAttribute('video') + ".html",
                 });
             });
@@ -216,31 +285,52 @@ var movieController = {
         });
     },
 
-    ShowDay: function (index, filmId, elementId, week) {
-        console.log("day: " + index + "   Filmid : " + filmId + "   elementId : " + elementId + "   week : " + week);
+    ShowDay: function (index, filmId, elementId, week, buttonId) {
         let hours = document.getElementById(elementId + "h");
         let tmp = movieController.films[week].get(filmId).dates[index];
-        console.log(tmp);
+        let loopBreaker;
         hours.innerHTML = "";
         if (tmp != null) {
             let tmp2 = tmp.split(";");
             tmp2.forEach(hour => {
                 let row = document.createElement("p");
                 row.innerText = hour;
+                loopBreaker = row.innerText;
                 hours.appendChild(row);
             });
         }
         else {
             let row = document.createElement("p");
             row.innerText = "Pas d'horaires prévus à ce jour";
+            loopBreaker = row.innerText;
             hours.appendChild(row);
         }
+        let ids = buttonId.split(" ");
+        let tmp2 = ids[0];
+        let buttons = document.querySelectorAll("button[id^=\"" + tmp2 + "\"]");
+        let allButtons = document.querySelectorAll(".mosaicButtons")
+        allButtons.forEach(button => {
+            button.style = "";
+        });
+        buttons.forEach(otherbutton => {
+            let id = otherbutton.id.split(" ");
+            if (otherbutton.getAttribute("clicked") != 1 ) {
+                otherbutton.click();
+                otherbutton.setAttribute("clicked", 1);
+                otherbutton.style = "outline-offset: -6px; outline: dotted 3px yellow;";
+            }
+            else {
+                otherbutton.setAttribute("clicked", 0);
+            }
+        });
+
     },
 
     ShowList: function (index) {
         var filmPack = movieController.films[index];
         var mosaic = document.getElementById("mosaic");
         mosaic.innerHTML = "";
+        var buttonRowId = 0;
         filmPack.forEach(film => {
             let entry = document.createElement("div");
             entry.classList.add("entry");
@@ -266,7 +356,10 @@ var movieController = {
                 let button = document.createElement("button");
                 button.innerText = tlrUtil.IntToDaysFR[i];
                 let abc = i;
-                button.addEventListener("click", function () { movieController.ShowDay(abc, film.id, entry.id, index); }, false);
+                button.id = "b" + abc + " " + buttonRowId;
+                button.addEventListener("click", function () { movieController.ShowDay(abc, film.id, entry.id, index, button.id); }, false);
+                button.classList.add("mosaicButtons");
+                
                 days.appendChild(button);
             }
             let hours = document.createElement("div");
@@ -274,7 +367,7 @@ var movieController = {
             hours.id = film.title.replaceAll(" ", "") + "h";
             hours.innerText = "Cliquer sur un jour pour voir la programmation de celui ci";
 
-
+            buttonRowId++;
             dates.appendChild(days);
             dates.appendChild(hours);
             entry.appendChild(cover);
@@ -282,4 +375,30 @@ var movieController = {
             mosaic.appendChild(entry);
         });
     }
+}
+
+// Get the modal
+var modal = document.getElementById("movieModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }

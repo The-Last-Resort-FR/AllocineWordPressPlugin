@@ -1,5 +1,20 @@
 # Change Log
 
+## [1.1.2] - 2021-06-15
+
+### Changed
+
+- All the films have the same day selected and the button is highlighted
+- Hours aligned to the left
+
+### Added
+
+- vo/vf processing
+
+### Fixed
+
+- Missing movie dates
+
 ## [1.1.1] - 2021-06-14
 
 ### Changed
