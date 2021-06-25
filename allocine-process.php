@@ -11,7 +11,7 @@
  * Plugin Name:       Allocine Process
  * Plugin URI:        https://github.com/The-Last-Resort-FR/AllocineWordPressPlugin
  * Description:       Get the data from Allocine and process it into various forms
- * Version:           1.0.0
+ * Version:           1.1.2
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            The Last Resort
@@ -22,13 +22,65 @@
 */
 
 // Exit if not called by WordPress
-if (!defined('ABSPATH')) 
+if (!defined('ABSPATH'))
 {
     exit;
 }
 
 
-function acp_get_xml_info() 
+/**
+ * Version actuelle du plugin
+ */
+define( 'WP_ALLOCINE_VERSION', '1.1.2' );
+define( 'MAX_USERS_RESERVATION', 50 );
+
+/**
+ * Cette fonction definit le code qui sera lancé à l'activation du plugin
+ */
+function activate_wp_allocine() {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-activator.php';
+    WP_Allocine_Activator::activate();
+
+}
+
+/**
+ * Cette fonction definit le code qui sera lancé à la désactivation du plugin
+ */
+function deactivate_wp_allocine() {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-deactivator.php';
+    WP_Allocine_Deactivator::deactivate();
+}
+
+register_activation_hook( __FILE__, 'activate_wp_allocine' );
+register_deactivation_hook( __FILE__, 'deactivate_wp_allocine' );
+
+
+/**
+ * Load the required dependencies for this plugin.
+ *
+ * Include the following files that make up the plugin:
+ *
+ * - WP_Allocine_Rest_API. Rest API.
+ *
+ * Create an instance of the loader which will be used to register the hooks
+ * with WordPress.
+ *
+ * @since    1.1.2
+ * @access   public
+ */
+function load_dependencies() {
+    /**
+     * Cette classe permet d'importer les routes de notre API Rest
+     */
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-rest-api.php';
+}
+
+load_dependencies();
+$rest_api = new WP_Allocine_Rest_Api();
+$rest_api->register_rest_route();
+
+
+function acp_get_xml_info()
 {
 
 	return apply_filters(
@@ -40,7 +92,7 @@ function acp_get_xml_info()
 
 
 // build the array
-function acp_make_xml_infos( $XMLI ) 
+function acp_make_xml_infos( $XMLI )
 {
 
 	$XMLI = array(
@@ -60,9 +112,9 @@ function acp_make_xml_infos( $XMLI )
 add_filter( 'acp_xml_infos', 'acp_make_xml_infos', 10, 1 );
 
 // add the entry to the wp customize menu
-function acp_xml_customizer_settings( $wp_customize ) 
+function acp_xml_customizer_settings( $wp_customize )
 {
- 
+
     $xml_infos = acp_get_xml_info();
 
     if ( ! empty( $xml_infos ) ) {
@@ -94,7 +146,7 @@ function acp_xml_customizer_settings( $wp_customize )
             'description' => $xml_infos['description'],
         )
     );
-} 
+}
 
 add_action( 'customize_register', 'acp_xml_customizer_settings' );
 
@@ -118,14 +170,15 @@ function acp_shortcode_call()
 {
     $XML = acp_get_xml_info();
     $data = file_get_contents(get_theme_mod($XML['id']));
-    //wp_localize_script('make-html', 'acp', array( 
+    //wp_localize_script('make-html', 'acp', array(
     //    'xmlContent'=> $data,
-    //    ) 
-    //);    
-    wp_localize_script('movie-controller', 'acp', array( 
+    //    )
+    //);
+    wp_localize_script('movie-controller', 'acp', array(
         'xmlContent'=> base64_encode($data),
         )
     );
+
     return file_get_contents("list.html", true);
 }
 
