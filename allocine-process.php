@@ -16,7 +16,8 @@
  * Requires PHP:      7.2
  * Author:            The Last Resort
  * Author URI:        https://github.com/The-Last-Resort-FR
- * Text Domain:       plugin-slug
+ * Text Domain:       wp-allocine
+ * Languages : /languages
  * License:           GPL v2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 */
@@ -32,6 +33,9 @@ if (!defined('ABSPATH'))
  * Version actuelle du plugin
  */
 define( 'WP_ALLOCINE_VERSION', '1.1.2' );
+/**
+ * Nombre maximum de réservations possible au sein d'une salle du Vox
+ */
 define( 'MAX_USERS_RESERVATION', 50 );
 
 /**
