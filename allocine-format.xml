@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ProgrammationSalles>
+    <semaine date="02/06/2021">
+        <salles>
+            <salle id="W4545" nom="Cinéma Vox" ville="Château-Renard" adresse="28 place du Vieux Marché">
+                <films>
+                    <film id="264648" titre="100% loup" titreoriginal="100% Wolf" realisateurs="Alexs Stadermann" acteurs="Adriane Daff, Jane Lynch, Akmal Saleh, Jai Courtney, Alexs Stadermann" anneeproduction="2020" datesortie="19/05/2021" duree="01h36" genreprincipal="Fantastique, Animation, Famille" nationalite="Australie" synopsis="Freddy Lupin et sa famille sont des humains ordinaires. Mais dès la tombée de la nuit, ils deviennent des loups-garous ! Le jour de son quatorzième anniversaire, Freddy s’attend à se transformer pour la première fois. Mais le soir de son initiation, le voilà qui devient … un mignon petit caniche rose !" affichette="http://images.allocine.fr/pictures/20/09/11/12/37/5251375.jpg" video="19589750" visanumber="153866">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer: 14:00 | 16:15|dim: 11:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">02-06-2021 14:00:00;02-06-2021 16:15:00;06-06-2021 11:00:00</horaire>
+                    </film>
+                    <film id="274531" titre="Mandibules" titreoriginal="" realisateurs="Quentin Dupieux" acteurs="David Marsais, Grégoire Ludig, Adèle Exarchopoulos, Coralie Russier, Roméo Elvis" anneeproduction="2020" datesortie="19/05/2021" duree="01h17" genreprincipal="Comédie, Fantastique" nationalite="France" synopsis="Jean-Gab et Manu, deux amis simples d'esprit, trouvent une mouche géante coincée dans le coffre d'une voiture et se mettent en tête de la dresser pour gagner de l'argent avec." affichette="http://images.allocine.fr/pictures/21/05/03/14/42/3082289.jpg" video="19587703" visanumber="152039">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer, mar: 19:00|ven: 19:15|sam: 17:15|dim: 14:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">02-06-2021 19:00:00;04-06-2021 19:15:00;05-06-2021 17:15:00;06-06-2021 14:00:00;08-06-2021 19:00:00</horaire>
+                    </film>
+                    <film id="280076" titre="ADN" titreoriginal="" realisateurs=" Maïwenn" acteurs="Fanny Ardant, Louis Garrel,  Dylan Robert,  Maïwenn, Marine Vacth" anneeproduction="2020" datesortie="19/05/2021" duree="01h30" genreprincipal="Drame" nationalite="France" synopsis="Neige, divorcée et mère de trois enfants, rend régulièrement visite à Émir, son grand-père algérien qui vit désormais en maison de retraite. Elle adore et admire ce pilier de la famille, qui l’a élevée et surtout protégée de la toxicité de ses parents. Les rapports entre les nombreux membres de la famille sont compliqués et les rancœurs nombreuses..." affichette="http://images.allocine.fr/pictures/20/10/07/14/34/4816778.jpg" video="19588984" visanumber="151484">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">jeu, sam, lun: 19:00|dim: 16:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">03-06-2021 19:00:00;05-06-2021 19:00:00;06-06-2021 16:00:00;07-06-2021 19:00:00</horaire>
+                    </film>
+                    <film id="274345" titre="Adieu Les Cons" titreoriginal="" realisateurs="Albert Dupontel" acteurs="Virginie Efira, Albert Dupontel, Michel Vuillermoz, Jackie Berroyer, Bastien Ughetto" anneeproduction="2020" datesortie="19/05/2021" duree="01h27" genreprincipal="Comédie" nationalite="France" synopsis="Lorsque Suze Trappet apprend à 43 ans qu’elle est sérieusement malade, elle décide de partir à la recherche de l'enfant qu’elle a été forcée d'abandonner quand elle avait 15 ans.Sa quête administrative va lui faire croiser JB, quinquagénaire en plein burn out, et M. Blin, archiviste aveugle d’un enthousiasme impressionnant. À eux trois, ils se lancent dans une quête aussi spectaculaire qu’improbable." affichette="http://images.allocine.fr/pictures/21/05/06/12/49/3253181.jpg" video="19589536" visanumber="150859">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">ven: 17:30|sam: 15:00|dim: 18:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">04-06-2021 17:30:00;05-06-2021 15:00:00;06-06-2021 18:00:00</horaire>
+                    </film>
+                </films>
+            </salle>
+        </salles>
+    </semaine>
+    <semaine date="09/06/2021">
+        <salles>
+            <salle id="W4545" nom="Cinéma Vox" ville="Château-Renard" adresse="28 place du Vieux Marché">
+                <films>
+                    <film id="271453" titre="L'Etreinte" titreoriginal="" realisateurs="Ludovic Bergery" acteurs="Emmanuelle Béart, Vincent Dedienne, Eva Ionesco, Tibo Vandenborre, Sandor Funtek" anneeproduction="2020" datesortie="19/05/2021" duree="01h40" genreprincipal="Drame" nationalite="France" synopsis="Margaux a perdu son mari et commence une nouvelle vie. Elle s’installe chez sa sœur et s’inscrit à l’université pour reprendre des études de littérature. Mais rapidement, elle ressent le besoin d’autres émotions. Elle part en quête d’amour, au risque de s’y perdre..." affichette="http://images.allocine.fr/pictures/21/04/26/17/26/4150140.jpg" video="19589617" visanumber="137691">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer: 18:15|jeu, sam: 20:30|dim: 14:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">09-06-2021 18:15:00;10-06-2021 20:30:00;12-06-2021 20:30:00;13-06-2021 14:00:00</horaire>
+                    </film>
+                    <film id="268684" titre="Falling" titreoriginal="" realisateurs="Viggo Mortensen" acteurs="Viggo Mortensen, Lance Henriksen, Sverrir Gudnason, Laura Linney, Hannah Gross" anneeproduction="2020" datesortie="19/05/2021" duree="01h53" genreprincipal="Drame" nationalite="Grande-Bretagne" synopsis="John vit en Californie avec son compagnon Eric et leur fille adoptive Mónica, loin de la vie rurale conservatrice qu’il a quittée voilà des années. Son père, Willis, un homme obstiné issu d’une époque révolue, vit désormais seul dans la ferme isolée où a grandi John." affichette="http://images.allocine.fr/pictures/21/05/03/14/41/4174336.jpg" video="19589496" visanumber="153816">
+                        <horaire_web vo="1" version="Anglais" projection="2D" soustitre="" salle="01">mer, mar: 20:30|sam: 18:00</horaire_web>
+                        <horaire vo="1" version="Anglais" projection="2D" soustitre="" salle="01">09-06-2021 20:30:00;12-06-2021 18:00:00;15-06-2021 20:30:00</horaire>
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">dim: 20:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">13-06-2021 20:30:00</horaire>
+                    </film>
+                    <film id="274345" titre="Adieu Les Cons" titreoriginal="" realisateurs="Albert Dupontel" acteurs="Virginie Efira, Albert Dupontel, Michel Vuillermoz, Jackie Berroyer, Bastien Ughetto" anneeproduction="2020" datesortie="19/05/2021" duree="01h27" genreprincipal="Comédie" nationalite="France" synopsis="Lorsque Suze Trappet apprend à 43 ans qu’elle est sérieusement malade, elle décide de partir à la recherche de l'enfant qu’elle a été forcée d'abandonner quand elle avait 15 ans.Sa quête administrative va lui faire croiser JB, quinquagénaire en plein burn out, et M. Blin, archiviste aveugle d’un enthousiasme impressionnant. À eux trois, ils se lancent dans une quête aussi spectaculaire qu’improbable." affichette="http://images.allocine.fr/pictures/21/05/06/12/49/3253181.jpg" video="19589536" visanumber="150859">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">jeu, mar: 18:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">10-06-2021 18:30:00;15-06-2021 18:30:00</horaire>
+                    </film>
+                    <film id="277997" titre="Michel-Ange" titreoriginal="Il Peccato" realisateurs="Andrey Konchalovsky" acteurs="Orso Maria Guerrini, Alberto Testone, Yuliya Vysotskaya, Glen Blackhall, Jakob Diehl" anneeproduction="2019" datesortie="19/05/2021" duree="02h14" genreprincipal="Drame, Historique, Biopic" nationalite="Italie" synopsis="Michel Ange à travers les moments d’angoisse et d’extase de son génie créatif, tandis que deux familles nobles rivales se disputent sa loyauté." affichette="http://images.allocine.fr/pictures/20/10/22/17/58/0792571.jpg" video="19589517" visanumber="153809">
+                        <horaire_web vo="1" version="italien" projection="2D" soustitre="" salle="01">ven: 19:30|dim: 17:30|lun: 20:00</horaire_web>
+                        <horaire vo="1" version="italien" projection="2D" soustitre="" salle="01">11-06-2021 19:30:00;13-06-2021 17:30:00;14-06-2021 20:00:00</horaire>
+                    </film>
+                </films>
+            </salle>
+        </salles>
+    </semaine>
+    <semaine date="16/06/2021">
+        <salles>
+            <salle id="W4545" nom="Cinéma Vox" ville="Château-Renard" adresse="28 place du Vieux Marché">
+                <films>
+                    <film id="272523" titre="Des hommes" titreoriginal="" realisateurs="Lucas Belvaux" acteurs="Gérard Depardieu, Catherine Frot, Jean-Pierre Darroussin, Yoann Zimmer, Félix Kysyl" anneeproduction="2019" datesortie="02/06/2021" duree="01h41" genreprincipal="Drame, Historique" nationalite="France" synopsis="Ils ont été appelés en Algérie au moment des &quot;événements&quot; en 1960. Deux ans plus tard, Bernard, Rabut, Février et d'autres sont rentrés en France. Ils se sont tus, ils ont vécu leurs vies. Mais parfois il suffit de presque rien, d'une journée d'anniversaire, d'un cadeau qui tient dans la poche, pour que quarante ans après, le passé fasse irruption dans la vie de ceux qui ont cru pouvoir le nier." affichette="http://images.allocine.fr/pictures/20/07/15/11/39/5633138.jpg" video="19589583" visanumber="150270">
+                        <horaire_web vo="1" version="France" projection="2D" soustitre="" salle="01">mer, dim: 20:30|jeu: 18:15</horaire_web>
+                        <horaire vo="1" version="France" projection="2D" soustitre="" salle="01">16-06-2021 20:30:00;17-06-2021 18:15:00;20-06-2021 20:30:00</horaire>
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">ven: 19:45</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">18-06-2021 19:45:00</horaire>
+                    </film>
+                    <film id="273981" titre="The Father" titreoriginal="" realisateurs="Florian Zeller" acteurs="Olivia Colman, Anthony Hopkins, Imogen Poots, Rufus Sewell, Mark Gatiss" anneeproduction="2020" datesortie="26/05/2021" duree="01h38" genreprincipal="Drame" nationalite="France" synopsis="THE FATHER raconte la trajectoire intérieure d’un homme de 81 ans, Anthony, dont la réalité se brise peu à peu sous nos yeux. Mais c’est aussi l’histoire d’Anne, sa fille, qui tente de l’accompagner dans un labyrinthe de questions sans réponses." affichette="http://images.allocine.fr/pictures/21/05/06/12/38/3783901.jpg" video="19589900" visanumber="">
+                        <horaire_web vo="1" version="France" projection="2D" soustitre="" salle="01">jeu, lun: 20:30</horaire_web>
+                        <horaire vo="1" version="France" projection="2D" soustitre="" salle="01">17-06-2021 20:30:00;21-06-2021 20:30:00</horaire>
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">sam: 16:00|mar: 20:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">19-06-2021 16:00:00;22-06-2021 20:30:00</horaire>
+                    </film>
+                    <film id="286016" titre="Les Sept vies de Madeleine Riffaud" titreoriginal="" realisateurs="Jorge Amat" acteurs="Madeleine Riffaud" anneeproduction="2020" datesortie="07/10/2020" duree="00h00" genreprincipal="Documentaire" nationalite="France" synopsis="En 1944 Madeleine Riffaud jeune résistante exécute un allemand, emprisonnée, torturée par la Gestapo à 20 ans, elle échappe au peloton d’exécution ainsi qu’au train qui aurait du l’emmener au camp d’extermination..." affichette="http://images.allocine.fr/pictures/20/08/24/11/42/0535628.jpg" video="19589691" visanumber="">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">dim: 17:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">20-06-2021 17:30:00</horaire>
+                    </film>
+                </films>
+            </salle>
+        </salles>
+    </semaine>
+    <semaine date="23/06/2021">
+        <salles>
+            <salle id="W4545" nom="Cinéma Vox" ville="Château-Renard" adresse="28 place du Vieux Marché">
+                <films>
+                    <film id="275419" titre="5ème Set" titreoriginal="" realisateurs="Quentin Reynaud" acteurs="Ana Girardot, Alex Lutz, Kristin Scott Thomas, Jürgen Briand, Tariq Bettahar" anneeproduction="2019" datesortie="16/06/2021" duree="01h53" genreprincipal="Drame" nationalite="France" synopsis="À presque 38 ans, Thomas est un tennisman qui n’a jamais brillé́. Pourtant, il y a 17 ans, il était l’un des plus grands espoirs du tennis. Mais une défaite en demi-finale l’a traumatisé et depuis, il est resté dans les profondeurs du classement.  " affichette="http://images.allocine.fr/pictures/21/04/27/11/56/5789543.jpg" video="19588310" visanumber="">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer, ven, sam, dim: 18:00|jeu: 20:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">23-06-2021 18:00:00;24-06-2021 20:30:00;25-06-2021 18:00:00;26-06-2021 18:00:00;27-06-2021 18:00:00</horaire>
+                    </film>
+                    <film id="277534" titre="Le Discours" titreoriginal="" realisateurs="Laurent Tirard" acteurs="Benjamin Lavernhe, Sara Giraudeau, Kyan Khojandi, Julia Piaton, François Morel" anneeproduction="2020" datesortie="09/06/2021" duree="01h28" genreprincipal="Comédie" nationalite="France" synopsis="Coincé à un repas de famille qui lui donne des envies de meurtre, Adrien attend. Il attend que Sonia réponde à son sms et mette fin à la « pause » qu’elle lui fait subir depuis un mois. Et voilà que Ludo, son futur beau-frère, lui demande de faire un « petit » discours pour le mariage ! Adrien panique. Mais si ce discours était finalement la meilleure chose qui puisse lui arriver ?" affichette="http://images.allocine.fr/pictures/20/11/20/14/01/1694027.jpg" video="19589604" visanumber="151393">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer, sam: 20:30|jeu, lun: 18:30|dim: 14:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">23-06-2021 20:30:00;24-06-2021 18:30:00;26-06-2021 20:30:00;27-06-2021 14:00:00;28-06-2021 18:30:00</horaire>
+                    </film>
+                    <film id="279282" titre="Méandre" titreoriginal="" realisateurs="Mathieu Turi" acteurs="Gaia Weiss, Peter Franzen, Romane Libert, Corneliu Dragomirescu, Frédéric Franchitti" anneeproduction="2020" datesortie="26/05/2021" duree="01h30" genreprincipal="Epouvante-horreur, Science fiction, Thriller" nationalite="France" synopsis="Une jeune femme se réveille dans un tube rempli de pièges mortels. Pour ne pas mourir, elle devra constamment avancer…" affichette="http://images.allocine.fr/pictures/21/05/04/11/48/1985369.jpg" video="19589917" visanumber="">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">ven, dim, lun, mar: 20:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">25-06-2021 20:30:00;27-06-2021 20:30:00;28-06-2021 20:30:00;29-06-2021 20:30:00</horaire>
+                    </film>
+                </films>
+            </salle>
+        </salles>
+    </semaine>
+    <semaine date="30/06/2021">
+        <salles>
+            <salle id="W4545" nom="Cinéma Vox" ville="Château-Renard" adresse="28 place du Vieux Marché">
+                <films>
+                    <film id="271607" titre="Calamity, une enfance de Martha Jane Cannary" titreoriginal="" realisateurs="Rémi Chayé" acteurs="Alexandra Lamy, Salomé Boulven, Damien Witeka, Santiago Barban, Jochen Haegele" anneeproduction="2020" datesortie="19/05/2021" duree="01h22" genreprincipal="Animation, Famille" nationalite="France" synopsis="1863, dans un convoi qui progresse vers l’Ouest avec l’espoir d’une vie meilleure, le père de Martha Jane se blesse. C’est elle qui doit conduire le chariot familial et soigner les chevaux. L’apprentissage est rude et pourtant Martha Jane ne s’est jamais sentie aussi libre." affichette="http://images.allocine.fr/pictures/21/05/04/17/26/4774647.jpg" video="19588866" visanumber="147788">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer: 17:00|sam: 16:00|dim: 14:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">30-06-2021 17:00:00;03-07-2021 16:00:00;04-07-2021 14:00:00</horaire>
+                    </film>
+                    <film id="278933" titre="Les 2 Alfred" titreoriginal="" realisateurs="Bruno Podalydès" acteurs="Michel Vuillermoz, Denis Podalydès, Sandrine Kiberlain, Bruno Podalydès, Yann Frisch" anneeproduction="2020" datesortie="16/06/2021" duree="01h32" genreprincipal="Comédie" nationalite="France" synopsis="Alexandre, chômeur déclassé, a deux mois pour prouver à sa femme qu'il peut s'occuper de ses deux jeunes enfants et être autonome financièrement. Problème: The Box, la start-up très friendly qui veut l'embaucher à l'essai a pour dogme : « Pas d'enfant! », et Séverine, sa future supérieure, est une « tueuse » au caractère éruptif. Pour obtenir ce poste, Alexandre doit donc mentir..." affichette="http://images.allocine.fr/pictures/20/10/20/15/27/2153216.jpg" video="19589613" visanumber="151899">
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">mer, lun: 20:30|jeu: 18:30|sam, dim: 18:00</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">30-06-2021 20:30:00;01-07-2021 18:30:00;03-07-2021 18:00:00;04-07-2021 18:00:00;05-07-2021 20:30:00</horaire>
+                    </film>
+                    <film id="271687" titre="Nomadland" titreoriginal="" realisateurs="Chloé Zhao" acteurs="Frances McDormand, Linda May, David Strathairn, Charlene Swankie, Bob Wells" anneeproduction="2020" datesortie="09/06/2021" duree="01h48" genreprincipal="Drame" nationalite="U.S.A." synopsis="Après l’effondrement économique de la cité ouvrière du Nevada où elle vivait, Fern décide de prendre la route à bord de son van aménagé et d’adopter une vie de nomade des temps modernes, en rupture avec les standards de la société actuelle. De vrais nomades incarnent les camarades et mentors de Fern et l’accompagnent dans sa découverte des vastes étendues de l’Ouest américain." affichette="http://images.allocine.fr/pictures/21/04/29/09/49/2883699.jpg" video="19591089" visanumber="154180">
+                        <horaire_web vo="1" version="Anglais" projection="2D" soustitre="" salle="01">jeu, ven, mar: 20:30</horaire_web>
+                        <horaire vo="1" version="Anglais" projection="2D" soustitre="" salle="01">01-07-2021 20:30:00;02-07-2021 20:30:00;06-07-2021 20:30:00</horaire>
+                        <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">sam, dim: 20:30</horaire_web>
+                        <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">03-07-2021 20:30:00;04-07-2021 20:30:00</horaire>
+                    </film>
+                </films>
+            </salle>
+        </salles>
+    </semaine>
+</ProgrammationSalles>

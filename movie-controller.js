@@ -157,7 +157,7 @@ jQuery('document').ready(function () {
     movieController.RemovePast();
     movieController.loadModel();
     //movieController.SortWeeks();
-    movieController.CancelFilmDesc(0);
+    movieController.renderList(0);
 });
 
 var movieController = {
@@ -230,11 +230,11 @@ var movieController = {
         let tmp = document.getElementById('mosaicTable');
         tmp.innerHTML = this.FilmDescriptionHTML;
     },
-    SwitchToHoursTable: function() {
+    injectHoursTable: function() {
         let tmp = document.getElementById('mosaicTable');
         tmp.innerHTML = this.HoursTableHTML;
     },
-    showDateSelector: function () {
+    injectDateSelector: function () {
         selection = jQuery('#week-selector');
         selection.empty();
 
@@ -243,17 +243,17 @@ var movieController = {
         })
 
     },
-    CancelFilmDesc: function(week) {
-        movieController.SwitchToHoursTable();
-        movieController.showDateSelector();
-        movieController.WeekSelector();
+    renderList: function(week) {
+        movieController.injectHoursTable();
+        movieController.injectDateSelector();
+        movieController.loadBehaviourOfWeekSelector();
         movieController.ShowList(week);
     },
     ShowFilmDesc: function(week, id) {
         movieController.SwitchToFilmDesc();
         let cancelButton = document.getElementById("bCancel");
         cancelButton.style.cursor = "pointer";
-        cancelButton.addEventListener("click", function () { movieController.CancelFilmDesc(week); }, false);
+        cancelButton.addEventListener("click", function () { movieController.renderList(week); }, false);
         let film = movieController.films[week].get(id);
         let filmDesc = document.getElementById("filmDesc");
         let img = document.createElement("img");
@@ -281,7 +281,7 @@ var movieController = {
         filmDesc.appendChild(filmInfo);
 
     },
-    WeekSelector: function () {
+    loadBehaviourOfWeekSelector: function () {
 
         jQuery('#week-selector').change(function () {
             movieController.ShowList(document.getElementById("week-selector").options.selectedIndex);
@@ -312,7 +312,29 @@ var movieController = {
 
             this.nbFilms++;
             this.films[this.nbFilms - 1] = new Map();
+
             filmsNode.querySelectorAll('film').forEach(film => {
+
+                /*
+                Exemple d'un bout de programmation de films, avec un childNodes[3] disponible (parfois il n'y en a pas)
+
+                <film id="272523" titre="Des hommes" titreoriginal="" realisateurs="Lucas Belvaux" acteurs="Gérard Depardieu, Catherine Frot, Jean-Pierre Darroussin, Yoann Zimmer, Félix Kysyl" anneeproduction="2019" datesortie="02/06/2021" duree="01h41" genreprincipal="Drame, Historique" nationalite="France" synopsis="Ils ont été appelés en Algérie au moment des &quot;événements&quot; en 1960. Deux ans plus tard, Bernard, Rabut, Février et d'autres sont rentrés en France. Ils se sont tus, ils ont vécu leurs vies. Mais parfois il suffit de presque rien, d'une journée d'anniversaire, d'un cadeau qui tient dans la poche, pour que quarante ans après, le passé fasse irruption dans la vie de ceux qui ont cru pouvoir le nier." affichette="http://images.allocine.fr/pictures/20/07/15/11/39/5633138.jpg" video="19589583" visanumber="150270">
+                    <horaire_web vo="1" version="France" projection="2D" soustitre="" salle="01">mer, dim: 20:30|jeu: 18:15</horaire_web>
+                    <horaire vo="1" version="France" projection="2D" soustitre="" salle="01">16-06-2021 20:30:00;17-06-2021 18:15:00;20-06-2021 20:30:00</horaire>
+                    <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">ven: 19:45</horaire_web>
+                    <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">18-06-2021 19:45:00</horaire>
+                </film>*/
+
+                // horaires du premier node 
+                // 09-06-2021 18:15:00;10-06-2021 20:30:00;12-06-2021 20:30:00;13-06-2021 14:00:00|13-06-2021 20:30:00
+                let dateTimes = film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : "");
+                // parametre des vos
+                // 1|0
+                let vos = film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): "");
+                // parametre des versions
+                // France|Français
+                let versions = tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): ""));
+
                 this.films[this.nbFilms - 1].set(film.getAttribute('id'), {
                     title: tlrUtil.decode_utf8(film.getAttribute('titre')),
                     id: film.getAttribute('id'),
@@ -325,71 +347,13 @@ var movieController = {
                     duration: film.getAttribute('duree'),
                     nationality: tlrUtil.decode_utf8(film.getAttribute('nationalite')),
                     date: film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : ""),
-                    dates: tlrUtil.PrepareDates(film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : ""),film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): ""), tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): ""))),
+                    dates: tlrUtil.PrepareDates(dateTimes,vos,versions),
                     vo: film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): ""),
                     lang: tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): "")),
                     video: "http://player.allocine.fr/" + film.getAttribute('video') + ".html",
                 });
             });
 
-        });
-    },
-    showWeek: function (index) {
-        var filmPack = movieController.films[index];
-        let tableFilms = document.getElementById('filmstab');
-        tableFilms.innerHTML = "\n<thead>\n<tr>\n<th>Affiche</th>\n<th>Titre</th>\n<th>Réalistateur</th>\n<th>Acteurs</th>\n<th>Synopsis</th>\n<th>Dates</th>\n<th style=\"min-width: 20%;\">Informations</th>\n</tr>\n</thead>\n<tbody>\n\n</tbody>\n";
-        filmPack.forEach(film => {
-            //console.log(film.title);
-            let row = document.createElement('tr');
-
-            // affiche
-            let td = document.createElement('td');
-            img = document.createElement('img');
-            img.src = film.img;
-            td.appendChild(img);
-            row.appendChild(td);
-
-            //  Titre
-            td = document.createElement('td');
-            td.innerText = film.title;
-            row.appendChild(td);
-
-            // Réalistateur
-            td = document.createElement('td');
-            td.innerText = film.director;
-            row.appendChild(td);
-
-            // Acteurs
-            td = document.createElement('td');
-            td.innerText = film.actor;
-            row.appendChild(td);
-
-            // Synopsis
-            td = document.createElement('td');
-            td.innerText = film.sumup;
-            row.appendChild(td);
-
-            // dates
-            td = document.createElement('td');
-            td.innerText = film.date;
-            td.date = td.innerText;
-            row.appendChild(td);
-
-            // Info
-            td = document.createElement('td');
-            td.innerText = "Année de production : " + film.prodYear + '\n' +
-                "Date de sortie : " + film.releaseDate + '\n' +
-                "Durée : " + film.duration + '\n' +
-                "Nationalité : " + film.nationality + '\n';
-            a = document.createElement('a');
-            a.href = film.video;
-            a.innerText = "Cliquez ici pour voir la bande annonce";
-            a.target = "_blank";
-            td.appendChild(a);
-            row.appendChild(td);
-
-
-            tableFilms.appendChild(row);
         });
     },
 
