@@ -2,6 +2,7 @@
 
 ## [1.1.2] - 2021-06-15
 
+
 ### Changed
 
 - All the films have the same day selected and the button is highlighted
