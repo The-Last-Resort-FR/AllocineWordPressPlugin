@@ -107,7 +107,7 @@ function acp_scripts() {
     wp_enqueue_script( "tlr-utilities");
     wp_register_script("movie-controller", plugin_dir_url( __FILE__ ) . '/movie-controller.js', array(), '1.0.0', true);
     wp_enqueue_script( "movie-controller");
-    wp_enqueue_style("list", plugin_dir_url( __FILE__ ) . '/list.css', array(), '1.0.0', true);
+    wp_enqueue_style("list", plugin_dir_url( __FILE__ ) . '/list.css', array(), '1.0.0', 'all');
     //wp_enqueue_style("make-html");
 }
 add_action( 'wp_enqueue_scripts', 'acp_scripts' );
