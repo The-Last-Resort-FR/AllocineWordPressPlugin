@@ -27,6 +27,14 @@ var tlrUtil = {
         dateStr2 = dateStr[0].split("-");
         return dateStr2[2] + "-" + dateStr2[1] + "-" + dateStr2[0] + "T" + dateStr[1];
     },
+    XmlDateStringToJsDateNH: function (date) {
+        let dateArr = date.split("/");
+        return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+    },
+    FilmDateToJsDate: function (date) {
+        let dateArr = date.split("-");
+        return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
+    },
 
     XmlDateToFRDate: function (date) {
         let dateStr = [];
@@ -80,21 +88,21 @@ var tlrUtil = {
                     dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
                 }
                 else if(voFirst != null && voFirst == false){
-                    dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]);
+                    dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]) + '\n';
                 }
                 else if(voFirst == null) {
-                    dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]);
+                    dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
                 }
             }
             else {
                 if(voFirst != null && voFirst == true){
-                    dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                    dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]) + '\n';
                 }
                 else if(voFirst != null && voFirst == false){
-                    dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]);
+                    dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]) + '\n';
                 }
                 else if(voFirst == null) {
-                    dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]);
+                    dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
                 }
             }
         });
@@ -107,24 +115,24 @@ var tlrUtil = {
                 let hour = d.split(" ");
                 if (dates[tmp2] == null) {
                     if(voFirst != null && voFirst == false){
-                        dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                        dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]) + '\n';
                     }
                     else if(voFirst != null && voFirst == true){
-                        dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]);
+                        dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]) + '\n';
                     }
                     else if(voFirst == null) {
-                        dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]);
+                        dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
                     }
                 }
                 else {
                     if(voFirst != null && voFirst == false){
-                        dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
+                        dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]) + '\n';
                     }
                     else if(voFirst != null && voFirst == true){
-                        dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]);
+                        dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]) + '\n';
                     }
                     else if(voFirst == null) {
-                        dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]);
+                        dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
                     }
                 }
             });
@@ -146,18 +154,19 @@ tlrUtil.MakeDays();
 jQuery('document').ready(function () {
 
     movieController.init();
-    //movieController.loadBehaviours();
-    movieController.WeekSelector();
+    movieController.RemovePast();
     movieController.loadModel();
-    movieController.ShowList(0);
-    //movieController.showWeek(jQuery('#week-selector').index());
+    //movieController.SortWeeks();
+    movieController.CancelFilmDesc(0);
 });
 
 var movieController = {
 
     parser: '',
     xmlDOM: '',
-    ev: new Event("unclick"),
+    FilmDescriptionHTML: '<div id="filmDesc"><span id="bCancel">retour</span></div>',
+    HoursTableHTML: '<div><label for="week-selector">Choisir une semaine : </label><select name="week" id="week-selector"></select></div><div id="mosaic"></div>',
+
 
     weeks: [],
     weekIndex: 0,
@@ -173,7 +182,57 @@ var movieController = {
                 element.getAttribute('date')
             );
         });
-        this.showDateSelector();
+    },
+    SortWeeks: function() { // Makes weeks from monday to monday
+        let filmArr = [];
+        let tmpFilms = [];
+        let twoDaysOffest = 172800000;
+
+        this.films.forEach( week => {
+            week.forEach(film => {
+                filmArr.push(film);
+            });
+        });
+        this.weeks.forEach((week, index) => {
+            let monday = new Date(tlrUtil.XmlDateStringToJsDateNH(week)).getTime() - twoDaysOffest; // Find monday
+            let month = (new Date(monday).getMonth() < 10) ? ( "0" + new Date(monday).getMonth()) : new Date(monday).getMonth(); // add the 0 if not superior to 10
+            this.weeks[index] =  new Date(monday).getDate() + "/" + month + "/" + new Date(monday).getFullYear();
+        });
+        let i = 0;
+        this.weeks.forEach((week, index) => {
+            tmpFilms.push(new Map());
+            let currenMonday = new Date(tlrUtil.XmlDateStringToJsDateNH(week)).getTime();
+            if(index == this.weeks.length - 1)
+            {
+                filmArr.forEach(film => {
+                    let dateTmp = film.date.split(' ');
+                    let filmDate = new Date(tlrUtil.FilmDateToJsDate(dateTmp[0])).getTime()
+                    if( filmDate >= currenMonday)
+                        tmpFilms[i].set(film.id, film);
+                });
+                return;
+            }
+            else
+            {
+                let nextMonday = new Date(tlrUtil.XmlDateStringToJsDateNH(this.weeks[index + 1])).getTime();
+                filmArr.forEach(film => {
+                    let dateTmp = film.date.split(' ');
+                    let filmDate = new Date(tlrUtil.FilmDateToJsDate(dateTmp[0])).getTime()
+                    if( filmDate >= currenMonday && filmDate < nextMonday)
+                        tmpFilms[i].push(film);
+                });
+            }
+            i++;
+        });
+        i = 0;
+    },
+    SwitchToFilmDesc: function() {
+        let tmp = document.getElementById('mosaicTable');
+        tmp.innerHTML = this.FilmDescriptionHTML;
+    },
+    SwitchToHoursTable: function() {
+        let tmp = document.getElementById('mosaicTable');
+        tmp.innerHTML = this.HoursTableHTML;
     },
     showDateSelector: function () {
         selection = jQuery('#week-selector');
@@ -184,11 +243,42 @@ var movieController = {
         })
 
     },
-    loadBehaviours: function () {
+    CancelFilmDesc: function(week) {
+        movieController.SwitchToHoursTable();
+        movieController.showDateSelector();
+        movieController.WeekSelector();
+        movieController.ShowList(week);
+    },
+    ShowFilmDesc: function(week, id) {
+        movieController.SwitchToFilmDesc();
+        let cancelButton = document.getElementById("bCancel");
+        cancelButton.style.cursor = "pointer";
+        cancelButton.addEventListener("click", function () { movieController.CancelFilmDesc(week); }, false);
+        let film = movieController.films[week].get(id);
+        let filmDesc = document.getElementById("filmDesc");
+        let img = document.createElement("img");
+        img.src = film.img;
+        img.style.float = "left";
+        let filmInfo = document.createElement("div");
+        filmInfo.style.float = "right";
+        let infos = document.createElement("p");
+        infos.innerHTML = "titre : " + film.title + '\n' + "<br>" +
+        "Réalistateur : " + film.director + '\n' +"<br>" +
+        "Acteurs : " + film.actor + '\n' +"<br>" +
+        "Synopsis : " + film.sumup +'\n' +"<br>" +
+        "Année de production : " + film.prodYear + '\n' +"<br>" +
+        "Date de sortie : " + film.releaseDate + '\n' +"<br>" +
+        "Durée : " + film.duration + '\n' +"<br>" +
+        "Nationalité : " + film.nationality + '\n' + "<br>";
+        let a = document.createElement('a');
+        a.href = film.video;
+        a.innerText = "Cliquez ici pour voir la bande annonce";
+        a.target = "_blank";
+        infos.appendChild(a);
+        filmInfo.appendChild(infos);
 
-        jQuery('#week-selector').change(function () {
-            movieController.showWeek(document.getElementById("week-selector").options.selectedIndex);
-        });
+        filmDesc.appendChild(img);
+        filmDesc.appendChild(filmInfo);
 
     },
     WeekSelector: function () {
@@ -198,6 +288,24 @@ var movieController = {
         });
 
     },
+    RemovePast: function () {
+        let past = [];
+        let currentDate = new Date().getTime();
+        for (let i = 1; i < movieController.weeks.length; i++)
+        {
+            let weekDate = new Date(tlrUtil.XmlDateStringToJsDateNH(movieController.weeks[i])).getTime()
+            if(currentDate > weekDate)
+            {
+                past.push(i - 1);
+                //movieController.weeks.splice(i - 1, 1);
+            }
+                
+        }
+        for (let i = 0; i < past.length; i++)
+            movieController.weeks.splice(0, 1);
+    },
+
+
     loadModel: function () {
         var films = this.xmlDOM.querySelectorAll('films');
         films.forEach((filmsNode, index) => {
@@ -327,10 +435,10 @@ var movieController = {
     },
 
     ShowList: function (index) {
-        var filmPack = movieController.films[index];
-        var mosaic = document.getElementById("mosaic");
+        let filmPack = movieController.films[index];
+        let mosaic = document.getElementById("mosaic");
         mosaic.innerHTML = "";
-        var buttonRowId = 0;
+        let buttonRowId = 0;
         filmPack.forEach(film => {
             let entry = document.createElement("div");
             entry.classList.add("entry");
@@ -341,6 +449,8 @@ var movieController = {
             let cover = document.createElement("div");
             let img = document.createElement("img");
             img.src = film.img;
+            img.addEventListener("click", function () { movieController.ShowFilmDesc(index, film.id); }, false);
+            img.style.cursor = "pointer";
             cover.classList.add("cover");
             cover.appendChild(img);
 
@@ -374,31 +484,5 @@ var movieController = {
             entry.appendChild(dates);
             mosaic.appendChild(entry);
         });
-    }
-}
-
-// Get the modal
-var modal = document.getElementById("movieModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+    },
 }
