@@ -59,3 +59,45 @@ div.hours p {
 span#bCancel {
     float: right;
 }
+
+.film_infos{
+    display: flex !important;
+    flex-direction: row;
+}
+.film_img{
+    flex: 1;
+}
+.film_img img{
+    display : block;
+    width: 100%;
+    height: auto;
+}
+.film_desc{
+    flex: 4;
+}
+.film_desc_text{
+    font-size: 12px;
+}
+.film-week {
+    display: flex !important;
+    flex-direction: row;
+}
+.film-day {
+    flex: 1;
+}
+.film-version {
+    flex: 1;
+}
+.film-horaires {
+
+}
+.film-horaire-btn{
+    font-size: 15px;
+}
+.active { 
+    outline-offset: -6px; outline: dotted 3px yellow;
+} 
+
+html {
+    scroll-behavior: smooth;
+}

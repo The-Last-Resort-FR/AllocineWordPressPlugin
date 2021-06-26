@@ -1,294 +1,47 @@
-var tlrUtil = {
-    dbg: "",
-    daysToInt: new Map(),
-    IntToDays: ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"],
-    IntToDaysFR: ["Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche", "Lundi", "Mardi"],
-
-    MakeDays: function () {
-        this.daysToInt.set("Wed", 0);
-        this.daysToInt.set("Thu", 1);
-        this.daysToInt.set("Fri", 2);
-        this.daysToInt.set("Sat", 3);
-        this.daysToInt.set("Sun", 4);
-        this.daysToInt.set("Mon", 5);
-        this.daysToInt.set("Tue", 6);
-    },
-
-    XmlHourToFr: function (hour) {
-        let tmp = hour.split(":")
-        return tmp[0] + "h" + tmp[1];
-    },
-
-    //[ "Wed", "Thu", "Fri", "Sat", "Sun", "Mon","Tue" ]
-    XmlDateStringToJsDate: function (date) {
-        let dateStr = [];
-        let dateStr2 = [];
-        dateStr = date.split(" ");
-        dateStr2 = dateStr[0].split("-");
-        return dateStr2[2] + "-" + dateStr2[1] + "-" + dateStr2[0] + "T" + dateStr[1];
-    },
-    XmlDateStringToJsDateNH: function (date) {
-        let dateArr = date.split("/");
-        return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
-    },
-    FilmDateToJsDate: function (date) {
-        let dateArr = date.split("-");
-        return dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0];
-    },
-
-    XmlDateToFRDate: function (date) {
-        let dateStr = [];
-        let dateStr2 = [];
-        let dateStr3 = [];
-        dateStr = date.split(" ");
-        dateStr2 = dateStr[0].split("-");
-        dateStr3 = dateStr[1].split(":");
-        return dateStr2[0] + "/" + dateStr2[1] + "/" + dateStr2[2] + " à " + dateStr3[0] + "h" + dateStr3[1];
-    },
-
-    encode_utf8: function (s) {
-        return unescape(encodeURIComponent(s));
-    },
-
-    decode_utf8: function (s) {
-        return decodeURIComponent(escape(s));
-    },
-
-    PrepareDates: function (date, vo, lang) {
-        // 02-06-2021 14:00:00;02-06-2021 16:15:00;06-06-2021 11:00:00
-        let dates = [];
-        let senario = 0;
-        let langs = lang.split("|");
-        let voFirst;
-        if(vo == "0|1") {
-            senario = 1;
-            voFirst = false;
-        } 
-        else if(vo == "1|0") {
-            senario = 2;
-            voFirst = true;
-        }
-        else if(vo == "0") senario = 3;
-        else if(vo == "1") senario = 4;
-
-        let datesLang = date.split("|");
-        let datesTmp = datesLang[0].split(";");
-        let datesTmp2
-        if (datesLang[1] != null)
-        {
-            datesTmp2 = datesLang[1].split(";");
-        }
-        datesTmp.forEach(d => {
-            let tmp = new Date(this.XmlDateStringToJsDate(d)).toDateString();
-            let splited = tmp.split(" ");
-            let tmp2 = this.daysToInt.get(splited[0]);
-            let hour = d.split(" ");
-            if (dates[tmp2] == null) {
-                if(voFirst != null && voFirst == true){
-                    dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]);
-                }
-                else if(voFirst != null && voFirst == false){
-                    dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]) + '\n';
-                }
-                else if(voFirst == null) {
-                    dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
-                }
-            }
-            else {
-                if(voFirst != null && voFirst == true){
-                    dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]) + '\n';
-                }
-                else if(voFirst != null && voFirst == false){
-                    dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]) + '\n';
-                }
-                else if(voFirst == null) {
-                    dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
-                }
-            }
-        });
-        if (datesLang[1] != null)
-        {
-            datesTmp2.forEach(d => {
-                let tmp = new Date(this.XmlDateStringToJsDate(d)).toDateString();
-                let splited = tmp.split(" ");
-                let tmp2 = this.daysToInt.get(splited[0]);
-                let hour = d.split(" ");
-                if (dates[tmp2] == null) {
-                    if(voFirst != null && voFirst == false){
-                        dates[tmp2] = "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]) + '\n';
-                    }
-                    else if(voFirst != null && voFirst == true){
-                        dates[tmp2] = "vf : " + this.XmlHourToFr(hour[1]) + '\n';
-                    }
-                    else if(voFirst == null) {
-                        dates[tmp2] = lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
-                    }
-                }
-                else {
-                    if(voFirst != null && voFirst == false){
-                        dates[tmp2] += "vo (" + langs[0] + ") : " + this.XmlHourToFr(hour[1]) + '\n';
-                    }
-                    else if(voFirst != null && voFirst == true){
-                        dates[tmp2] += "vf : " + this.XmlHourToFr(hour[1]) + '\n';
-                    }
-                    else if(voFirst == null) {
-                        dates[tmp2] += lang + " : " + this.XmlHourToFr(hour[1]) + '\n';
-                    }
-                }
-            });
-        }
-        return dates;
-    }
-
-
-}
-tlrUtil.MakeDays();
-
-
-
-
-
-
-
 
 jQuery('document').ready(function () {
 
     movieController.init();
-    movieController.RemovePast();
     movieController.loadModel();
-    //movieController.SortWeeks();
-    movieController.renderList(0);
+    movieController.renderList();
 });
 
-var movieController = {
-
+var movieController = 
+{
     parser: '',
     xmlDOM: '',
-    FilmDescriptionHTML: '<div id="filmDesc"><span id="bCancel">retour</span></div>',
-    HoursTableHTML: '<div><label for="week-selector">Choisir une semaine : </label><select name="week" id="week-selector"></select></div><div id="mosaic"></div>',
-
 
     weeks: [],
-    weekIndex: 0,
-    films: [],
-    nbFilms: 0,
+    weekStartDates: [],
+    selectedWeekIndex: 0,
+    selectedDayIndex: 0,
+    filmPackToBeAdded: new Map(),
+    films: new Map(), // Film contient toutes les informations du filmId, title, description, image
+    horaires: [], // on a dans cette array tous les horaires du fichier:  horaires [{filmId , Jour 0...6, date, horaire, version }]
+    nbHoraires: 0,
 
     init: function () {
-        this.parser = new DOMParser();
-        this.xmlDOM = this.parser.parseFromString(atob(acp.xmlContent), 'application/xml');
+        movieController.weeks = [];
+        movieController.films = new Map();
+        filmPackToBeAdded = new Map();
+        movieController.parser = new DOMParser();
+        movieController.xmlDOM = this.parser.parseFromString(atob(acp.xmlContent), 'application/xml');
         let weekTmp = this.xmlDOM.querySelectorAll('semaine');
         weekTmp.forEach(element => {
-            this.weeks.push(
-                element.getAttribute('date')
-            );
+            // we keep the start date -> text
+            movieController.weeks.push(element.getAttribute('date'));
+            // we keep the start date -> date
+            movieController.weekStartDates.push(new Date(tlrUtil.XmlDateStringToJsDateNH(element.getAttribute('date'))));
         });
+        // we remove all the weeks not in the current week
+        movieController.removePastWeeks();
+        // we select by default the index 0
+        movieController.selectedWeekIndex = 0;
+        // we defined the current day Index
+        movieController.selectedDayIndex = tlrUtil.getDayNumber();//daysToInt.get(new Date().toString().substring(0,3));
     },
-    SortWeeks: function() { // Makes weeks from monday to monday
-        let filmArr = [];
-        let tmpFilms = [];
-        let twoDaysOffest = 172800000;
-
-        this.films.forEach( week => {
-            week.forEach(film => {
-                filmArr.push(film);
-            });
-        });
-        this.weeks.forEach((week, index) => {
-            let monday = new Date(tlrUtil.XmlDateStringToJsDateNH(week)).getTime() - twoDaysOffest; // Find monday
-            let month = (new Date(monday).getMonth() < 10) ? ( "0" + new Date(monday).getMonth()) : new Date(monday).getMonth(); // add the 0 if not superior to 10
-            this.weeks[index] =  new Date(monday).getDate() + "/" + month + "/" + new Date(monday).getFullYear();
-        });
-        let i = 0;
-        this.weeks.forEach((week, index) => {
-            tmpFilms.push(new Map());
-            let currenMonday = new Date(tlrUtil.XmlDateStringToJsDateNH(week)).getTime();
-            if(index == this.weeks.length - 1)
-            {
-                filmArr.forEach(film => {
-                    let dateTmp = film.date.split(' ');
-                    let filmDate = new Date(tlrUtil.FilmDateToJsDate(dateTmp[0])).getTime()
-                    if( filmDate >= currenMonday)
-                        tmpFilms[i].set(film.id, film);
-                });
-                return;
-            }
-            else
-            {
-                let nextMonday = new Date(tlrUtil.XmlDateStringToJsDateNH(this.weeks[index + 1])).getTime();
-                filmArr.forEach(film => {
-                    let dateTmp = film.date.split(' ');
-                    let filmDate = new Date(tlrUtil.FilmDateToJsDate(dateTmp[0])).getTime()
-                    if( filmDate >= currenMonday && filmDate < nextMonday)
-                        tmpFilms[i].push(film);
-                });
-            }
-            i++;
-        });
-        i = 0;
-    },
-    SwitchToFilmDesc: function() {
-        let tmp = document.getElementById('mosaicTable');
-        tmp.innerHTML = this.FilmDescriptionHTML;
-    },
-    injectHoursTable: function() {
-        let tmp = document.getElementById('mosaicTable');
-        tmp.innerHTML = this.HoursTableHTML;
-    },
-    injectDateSelector: function () {
-        selection = jQuery('#week-selector');
-        selection.empty();
-
-        movieController.weeks.forEach(function (week) {
-            selection.append('<option value="' + week + '">' + week + '</option>');
-        })
-
-    },
-    renderList: function(week) {
-        movieController.injectHoursTable();
-        movieController.injectDateSelector();
-        movieController.loadBehaviourOfWeekSelector();
-        movieController.ShowList(week);
-    },
-    ShowFilmDesc: function(week, id) {
-        movieController.SwitchToFilmDesc();
-        let cancelButton = document.getElementById("bCancel");
-        cancelButton.style.cursor = "pointer";
-        cancelButton.addEventListener("click", function () { movieController.renderList(week); }, false);
-        let film = movieController.films[week].get(id);
-        let filmDesc = document.getElementById("filmDesc");
-        let img = document.createElement("img");
-        img.src = film.img;
-        img.style.float = "left";
-        let filmInfo = document.createElement("div");
-        filmInfo.style.float = "right";
-        let infos = document.createElement("p");
-        infos.innerHTML = "titre : " + film.title + '\n' + "<br>" +
-        "Réalistateur : " + film.director + '\n' +"<br>" +
-        "Acteurs : " + film.actor + '\n' +"<br>" +
-        "Synopsis : " + film.sumup +'\n' +"<br>" +
-        "Année de production : " + film.prodYear + '\n' +"<br>" +
-        "Date de sortie : " + film.releaseDate + '\n' +"<br>" +
-        "Durée : " + film.duration + '\n' +"<br>" +
-        "Nationalité : " + film.nationality + '\n' + "<br>";
-        let a = document.createElement('a');
-        a.href = film.video;
-        a.innerText = "Cliquez ici pour voir la bande annonce";
-        a.target = "_blank";
-        infos.appendChild(a);
-        filmInfo.appendChild(infos);
-
-        filmDesc.appendChild(img);
-        filmDesc.appendChild(filmInfo);
-
-    },
-    loadBehaviourOfWeekSelector: function () {
-
-        jQuery('#week-selector').change(function () {
-            movieController.ShowList(document.getElementById("week-selector").options.selectedIndex);
-        });
-
-    },
-    RemovePast: function () {
+    removePastWeeks: function () 
+    {
         let past = [];
         let currentDate = new Date().getTime();
         for (let i = 1; i < movieController.weeks.length; i++)
@@ -297,24 +50,20 @@ var movieController = {
             if(currentDate > weekDate)
             {
                 past.push(i - 1);
-                //movieController.weeks.splice(i - 1, 1);
-            }
-                
+            }   
         }
-        for (let i = 0; i < past.length; i++)
+        for (let i = 0; i < past.length; i++){
             movieController.weeks.splice(0, 1);
+            movieController.weekStartDates.splice(0, 1);
+        }
     },
-
-
-    loadModel: function () {
-        var films = this.xmlDOM.querySelectorAll('films');
-        films.forEach((filmsNode, index) => {
-
-            this.nbFilms++;
-            this.films[this.nbFilms - 1] = new Map();
-
-            filmsNode.querySelectorAll('film').forEach(film => {
-
+    loadModel: function () 
+    {
+        var filmsRef = this.xmlDOM.querySelectorAll('films');
+        filmsRef.forEach((filmsNode, index) => 
+        {
+            filmsNode.querySelectorAll('film').forEach(film => 
+            {
                 /*
                 Exemple d'un bout de programmation de films, avec un childNodes[3] disponible (parfois il n'y en a pas)
 
@@ -324,40 +73,329 @@ var movieController = {
                     <horaire_web vo="0" version="Français" projection="2D" soustitre="" salle="01">ven: 19:45</horaire_web>
                     <horaire vo="0" version="Français" projection="2D" soustitre="" salle="01">18-06-2021 19:45:00</horaire>
                 </film>*/
-
-                // horaires du premier node 
-                // 09-06-2021 18:15:00;10-06-2021 20:30:00;12-06-2021 20:30:00;13-06-2021 14:00:00|13-06-2021 20:30:00
-                let dateTimes = film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : "");
-                // parametre des vos
-                // 1|0
-                let vos = film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): "");
-                // parametre des versions
-                // France|Français
-                let versions = tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): ""));
-
-                this.films[this.nbFilms - 1].set(film.getAttribute('id'), {
-                    title: tlrUtil.decode_utf8(film.getAttribute('titre')),
-                    id: film.getAttribute('id'),
-                    img: film.getAttribute('affichette'),
-                    director: tlrUtil.decode_utf8(film.getAttribute('realisateurs')),
-                    actor: tlrUtil.decode_utf8(film.getAttribute('acteurs')),
-                    sumup: tlrUtil.decode_utf8(film.getAttribute('synopsis')),
-                    prodYear: film.getAttribute('anneeproduction'),
-                    releaseDate: film.getAttribute('datesortie'),
-                    duration: film.getAttribute('duree'),
-                    nationality: tlrUtil.decode_utf8(film.getAttribute('nationalite')),
-                    date: film.childNodes[1].innerHTML + (film.childNodes[3] != null ? ("|" + film.childNodes[3].innerHTML) : ""),
-                    dates: tlrUtil.PrepareDates(dateTimes,vos,versions),
-                    vo: film.childNodes[1].getAttribute('vo') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('vo'): ""),
-                    lang: tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version') + (film.childNodes[3] != null ? "|" + film.childNodes[3].getAttribute('version'): "")),
-                    video: "http://player.allocine.fr/" + film.getAttribute('video') + ".html",
-                });
+                if(!this.films.has(film.getAttribute('id')))
+                {
+                    this.films.set(film.getAttribute('id'), 
+                        {
+                            title: tlrUtil.decode_utf8(film.getAttribute('titre')),
+                            id: film.getAttribute('id'),
+                            img: film.getAttribute('affichette'),
+                            director: tlrUtil.decode_utf8(film.getAttribute('realisateurs')),
+                            actor: tlrUtil.decode_utf8(film.getAttribute('acteurs')),
+                            sumup: tlrUtil.decode_utf8(film.getAttribute('synopsis')),
+                            prodYear: film.getAttribute('anneeproduction'),
+                            releaseDate: film.getAttribute('datesortie'),
+                            duration: film.getAttribute('duree'),
+                            nationality: tlrUtil.decode_utf8(film.getAttribute('nationalite')),
+                            video: "http://player.allocine.fr/" + film.getAttribute('video') + ".html",
+                        });
+                }
+                let horaires1 = film.childNodes[1].innerHTML.split(';');
+                let vos1 = film.childNodes[1].getAttribute('vo');
+                let versions1 = tlrUtil.decode_utf8(film.childNodes[1].getAttribute('version'));
+                this.addHoraires(film.getAttribute('id'),horaires1,vos1,versions1);
+                if(film.childNodes[3] != null)
+                {
+                    let horaires2 = film.childNodes[3].innerHTML.split(';');
+                    let vos2 = film.childNodes[3].getAttribute('vo');
+                    let versions2 = tlrUtil.decode_utf8(film.childNodes[3].getAttribute('version'));
+                    this.addHoraires(film.getAttribute('id'),horaires2,vos2,versions2);
+                }
             });
-
         });
     },
+    addHoraires: function (filmId,horaires,vo,version)
+    {
 
-    ShowDay: function (index, filmId, elementId, week, buttonId) {
+        for (let i=0 ; i<horaires.length ; i++)
+        {
+            // we have to define the relatedWeekIndex
+            let horaireTmsp = new Date(tlrUtil.XmlDateStringToJsDate(horaires[i]))
+            // we filter the horaires between greater than first weekStartDate -> filter the ongoing timetable
+            if(movieController.weekStartDates[0] < horaireTmsp)
+            {
+                let dayIndex = tlrUtil.daysToInt.get(horaireTmsp.toDateString().substring(0,3));
+                let weekIndex = movieController.defineWeekIndex(horaireTmsp);
+                let versionOriginale = 'VF';
+                if(vo === '1')
+                {
+                    versionOriginale = 'VOST';
+                }
+                let h = { 
+                            filmId : filmId,
+                            dayIndex : dayIndex,
+                            horaireToShow: horaires[i].substring(0,16),
+                            horaireTmsp : horaireTmsp,
+                            weekIndex : weekIndex,
+                            vo : versionOriginale,
+                            version : version
+                        }
+                this.nbHoraires++;
+                this.horaires[this.nbHoraires-1] = h;
+            }
+        }
+    },
+    defineWeekIndex : function(date)
+    {
+        for(let i = 0 ; i < movieController.weekStartDates.length ; i++)
+        {
+            // if the parameter date can be compared to two weekStartDates
+            if(i < movieController.weekStartDates.length-1 )    
+            {
+                // if the date is between two consecutive startDate
+                if(movieController.weekStartDates[i] < date &&
+                date < movieController.weekStartDates[i+1])
+                {
+                    return i;
+                }
+            } else {
+                 // else -> we are at the lastweek, then we return the max index
+                return i;
+            }
+        }
+    },
+    injectFilmDesc: function() {
+        let tmp = document.getElementById('mosaicTable');
+        tmp.innerHTML = '<div id="filmDescription"><button id="back">retour</button></div>';
+    },
+    injectHoursTable: function() {
+        let tmp = document.getElementById('mosaicTable');
+        tmp.innerHTML = '<div><label for="week-selector">Choisir une semaine : </label><select name="week" id="week-selector"></select></div><div id="mosaic"></div>';
+    },
+    injectDateSelector: function () {
+        selection = jQuery('#week-selector');
+        selection.empty();
+        movieController.weeks.forEach(function (week) {
+            selection.append('<option value="' + week + '">' + week + '</option>');
+        })
+    },
+    loadBehaviourOfWeekSelector: function () {
+        jQuery('#week-selector').change(function () {
+            movieController.selectedWeekIndex = document.getElementById("week-selector").options.selectedIndex;
+            movieController.manageSelectedDayIndex();
+            movieController.showList(document.getElementById("week-selector").options.selectedIndex);
+        });
+    },
+    renderList: function() 
+    {
+        movieController.injectHoursTable();
+        movieController.injectDateSelector();
+        movieController.loadBehaviourOfWeekSelector();
+        movieController.showList();
+    },
+    showList: function () 
+    {
+        // filmPack to be added
+        movieController.filmPackToBeAdded = new Map();
+
+        // clean the place
+        let mosaic = jQuery("#mosaic");
+        mosaic.empty();
+        let list = '';
+        // we set the current date
+        let currentDate = new Date();
+        // we set the minWeekStartDate of the selectedWeek
+        let minWeekStartDate = movieController.weekStartDates[movieController.selectedWeekIndex];
+        // we set the maxWeekStartDate
+        const maxWeekStartDate = new Date(Number(minWeekStartDate));
+        maxWeekStartDate.setDate(maxWeekStartDate.getDate() + 7);
+        // if we are pointing to a week in the future
+        if(minWeekStartDate < currentDate)
+        {
+            // take the current date as minWeekStartDate
+            minWeekStartDate = currentDate;
+        }
+        // all the timetables are filtered between minWeekStartDate and maxWeekStartDate 
+        for(let i = 0 ; i < movieController.horaires.length ; i++)
+        {
+            let h = movieController.horaires[i];
+            ///////////////////////// DATE CONTROL ////////////////////////////
+            // ONlY THE FILM OF THE CURRENT WEEK are added to the movie list
+            // we check if the film has a timetable in the future and is in the current week
+            ///////////////////////////////////////////////////////////////////
+            if(minWeekStartDate < h.horaireTmsp && h.horaireTmsp < maxWeekStartDate)
+            {
+                // we add the movie to the page once - if not included yet
+                if(!movieController.filmPackToBeAdded.has(h.filmId))
+                {
+                    movieController.filmPackToBeAdded.set(h.filmId, h.filmId);
+                    let film = movieController.films.get(h.filmId);
+                    list += '<div id="'+h.filmId+'">';
+                    list += '   <div class="film_infos">';
+                    list += '       <div class="film_img">'
+                    list += '           <a class="filmTitle-'+film.id+'  title="Voir la fiche du film '+film.title+'"><img src="'+film.img+'" alt="'+film.title+' "/></a> ';
+                    list += '       </div>';
+                    list += '       <div class="film_desc">';
+                    list += '           <h3>';
+                    list += '               <a class="filmDesc-'+film.id+'" title="Voir la fiche du film '+film.title+'">'+film.title+'</a>';
+                    list += '          </h3>';
+                    list += '          <div class="film_desc_text">';
+                    list += '              <b>Durée:</b> '+film.duration+' ';
+                    list += '              <b>Date de Sortie:</b>'+film.releaseDate+'<br> ';
+                    list += '              Réalisé par <b>'+film.director +'</b><br> ';
+                    list += '              Avec <b>'+film.actor +'</b><br> ';
+                    list += '              Nationalité: '+film.nationality +' <br> ';
+                    list += '          </div>';
+                    list += '       </div>';
+                    list += '   </div>';
+                    list += '   <div class="film-week">';
+                    list += '       <button class="film-day Wed"> Mercredi</button>';
+                    list += '       <button class="film-day Thu"> Jeudi</button>';
+                    list += '       <button class="film-day Fri"> Vendredi</button>';
+                    list += '       <button class="film-day Sat"> Samedi</button>';
+                    list += '       <button class="film-day Sun"> Dimanche</button>';
+                    list += '       <button class="film-day Mon"> Lundi</button>';
+                    list += '       <button class="film-day Tue"> Mardi</button>';
+                    list += '   </div>';
+                    list += '   <div class="film-seance">';
+                    list += '       <div id="filmHoraires-'+film.id+'" class="film-horaires">';
+                    /// here the reservation buttons will be added to this section
+                    list += '       </div>';
+                    list += '       <div class="reservationArea"></div>';
+                    list += '   </div>';
+                    list += '</div><br>';
+
+                }
+            }
+        }
+        // Add the list to the DOM
+        mosaic.append(list);
+
+        // Add the Film Horaires button
+        movieController.refreshFilmHorairesButton();
+
+        // show the right selection
+        movieController.loadBehaviours();
+    },
+    loadBehaviours : function()
+    {
+        // when we clique on a day -> it highlights the right day buttons
+        jQuery('.Wed').click(function () { movieController.showOneSelectedDay(0)});
+        jQuery('.Thu').click(function () { movieController.showOneSelectedDay(1)});
+        jQuery('.Fri').click(function () { movieController.showOneSelectedDay(2)});
+        jQuery('.Sat').click(function () { movieController.showOneSelectedDay(3)});
+        jQuery('.Sun').click(function () { movieController.showOneSelectedDay(4)});
+        jQuery('.Mon').click(function () { movieController.showOneSelectedDay(5)});
+        jQuery('.Tue').click(function () { movieController.showOneSelectedDay(6)});
+        // when we press a horaire button
+        jQuery('.film-horaire-btn').click(function(){
+            //alert('Reservation '+jQuery(this).attr('index'));
+            var selection = jQuery(this).parent().parent().find('div.reservationArea');
+            reservationController.injectBookingForm(selection,jQuery(this).attr('index'));
+        })
+        // the image and the title are clickable
+        movieController.filmPackToBeAdded.forEach( fid => {
+            jQuery('.filmTitle-'+fid).add('.filmDesc-'+fid).click(function(){
+                    movieController.showFilmDesc(fid);
+                });
+        });
+    },
+    showOneSelectedDay : function(dayNumber)
+    {
+        reservationController.deleteAllReservationArea();
+        movieController.selectedDayIndex = dayNumber;
+        movieController.refreshFilmHorairesButton();
+        movieController.loadBehaviours();
+    },
+    refreshFilmHorairesButton : function()
+    {
+        // Empty the area
+        jQuery('.film-horaires').empty();
+        // then we fill the table of time tables
+        for(let i = 0 ; i < movieController.horaires.length ; i++)
+        {
+            let h = movieController.horaires[i];
+            // if this is the right day selected
+            // and if this is the right week selected
+            if(h.dayIndex === movieController.selectedDayIndex && 
+               h.weekIndex ==  movieController.selectedWeekIndex)
+            {
+                //let dateAndTime = h.horaireTmsp.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
+                let voText = ' ('+h.vo+')';
+                if(h.vo === 'VOST')
+                {
+                    voText = ' ('+h.vo+' - '+h.version+')';
+                } 
+                // Sometimes there is no jQuery filmHoraires element found 
+                // -> due to the DATE CONTROL, if the film has not been added previously into the list
+                jQuery('#filmHoraires-'+h.filmId).append('<button id="horaire-'+i+'" index="'+i+' "class="film-horaire-btn" title="Réserver">'+voText+' '+h.horaireToShow+'</button>');
+                
+            }
+        }
+        // if there is no timetable for that day, then we add a message 'Sorry no movie'
+        jQuery('.film-horaires:not(:has(button))').wrapInner("<div class='nodata'>... Pas séance prévue ...</div>");
+        
+        // Highlight
+        movieController.highlightTheRightSelection();
+        movieController.deactivatePastDays();
+
+    },
+    highlightTheRightSelection: function()
+    {
+        let day = tlrUtil.getDayIndex(movieController.selectedDayIndex);
+        jQuery('.film-day').removeClass("active");
+        jQuery('.film-horaire-btn').removeClass("active");
+        jQuery('.'+day).addClass("active");
+        jQuery('.film-horaire-btn').addClass("active");
+    },
+    deactivatePastDays : function() 
+    {
+        // only if we are pointing to the current week
+        if(movieController.selectedWeekIndex === 0)
+        {
+            // then there are days off
+            for(let i = tlrUtil.getDayNumber()-1; i >= 0; i--)
+            {
+                jQuery('.'+tlrUtil.getDayIndex(i)).prop('disabled', true)
+            }
+        }
+    },
+    manageSelectedDayIndex: function()
+    {
+        if(movieController.selectedWeekIndex === 0){
+            movieController.selectedDayIndex = tlrUtil.getDayNumber();
+        } else
+        {
+            movieController.selectedDayIndex = 0;
+        }
+    },
+    showFilmDesc: function(filmId)
+    {
+        movieController.injectFilmDesc();
+        let cancelButton = document.getElementById("back");
+        cancelButton.style.cursor = "pointer";
+        cancelButton.addEventListener("click", function () { movieController.renderList(); }, false);
+        let film = movieController.films.get(filmId);
+        let filmDesc = document.getElementById("filmDescription");
+        let img = document.createElement("img");
+        img.src = film.img;
+        img.style.float = "left";
+        let filmInfo = document.createElement("div");
+        filmInfo.style.float = "right";
+        /// le lien
+        let lien = document.createElement("p");
+        let a = document.createElement('a');
+        a.href = film.video;
+        a.innerText = "Cliquez ici pour voir la bande annonce";
+        a.target = "_blank";
+        lien.appendChild(a);
+        // le descriptif
+        let infos = document.createElement("p");
+        infos.innerHTML =   "<b>Titre :</b> " + film.title + '\n' + "<br>" +
+                            "<b>Réalistateur :</b> " + film.director + '\n' +"<br>" +
+                            "<b>Acteurs : </b>" + film.actor + '\n' +"<br>" +
+                            "<b>Synopsis : </b>" + film.sumup +'\n' +"<br>" +
+                            "<b>Année de production : </b>" + film.prodYear + '\n' +"<br>" +
+                            "<b>Date de sortie : </b>" + film.releaseDate + '\n' +"<br>" +
+                            "<b>Durée : </b>" + film.duration + '\n' +"<br>" +
+                            "<b>Nationalité : </b>" + film.nationality + '\n' + "<br>";
+        filmDesc.appendChild(img);
+        filmDesc.appendChild(lien);
+        filmInfo.appendChild(infos);
+        filmDesc.appendChild(filmInfo); 
+    },
+    showDay: function (index, filmId, elementId, week, buttonId) 
+    {
         let hours = document.getElementById(elementId + "h");
         let tmp = movieController.films[week].get(filmId).dates[index];
         let loopBreaker;
@@ -396,57 +434,5 @@ var movieController = {
             }
         });
 
-    },
-
-    ShowList: function (index) {
-        let filmPack = movieController.films[index];
-        let mosaic = document.getElementById("mosaic");
-        mosaic.innerHTML = "";
-        let buttonRowId = 0;
-        filmPack.forEach(film => {
-            let entry = document.createElement("div");
-            entry.classList.add("entry");
-            entry.id = film.title.replaceAll(" ", "");
-
-
-
-            let cover = document.createElement("div");
-            let img = document.createElement("img");
-            img.src = film.img;
-            img.addEventListener("click", function () { movieController.ShowFilmDesc(index, film.id); }, false);
-            img.style.cursor = "pointer";
-            cover.classList.add("cover");
-            cover.appendChild(img);
-
-
-
-            let dates = document.createElement("div");
-            dates.classList.add("dates");
-
-            let days = document.createElement("div");
-            days.classList.add("days");
-            let i = 0;
-            for (i = 0; i <= 6; i++) {
-                let button = document.createElement("button");
-                button.innerText = tlrUtil.IntToDaysFR[i];
-                let abc = i;
-                button.id = "b" + abc + " " + buttonRowId;
-                button.addEventListener("click", function () { movieController.ShowDay(abc, film.id, entry.id, index, button.id); }, false);
-                button.classList.add("mosaicButtons");
-                
-                days.appendChild(button);
-            }
-            let hours = document.createElement("div");
-            hours.classList.add("hours");
-            hours.id = film.title.replaceAll(" ", "") + "h";
-            hours.innerText = "Cliquer sur un jour pour voir la programmation de celui ci";
-
-            buttonRowId++;
-            dates.appendChild(days);
-            dates.appendChild(hours);
-            entry.appendChild(cover);
-            entry.appendChild(dates);
-            mosaic.appendChild(entry);
-        });
-    },
+    }
 }
