@@ -124,6 +124,9 @@ class WP_Allocine_Rest_Api {
      * @return string
      */
     public function addReservation($request_data) {
+
+        //TODO : Envoyer un mail de confirmation à l'admin et à l'utilisateur
+
         $response = [];
 
         // Regex servant à vérifier la validité d'une adresse mail
@@ -134,6 +137,9 @@ class WP_Allocine_Rest_Api {
         $clientName = $request_data->get_param("client_name");
         $clientEmail = $request_data->get_param("client_email");
         $reservedPlace = $request_data->get_param("reserved_place");
+
+        $dateDiffusionTmsp = new DateTime($diffusionTmsp);
+
 
         // Vérification des paramètres rentrés (réservation >=1, date valide, email valide, ...)
         if(
@@ -170,7 +176,7 @@ class WP_Allocine_Rest_Api {
             if(empty($existingReservation)) {
                 $reservation = $wpdb->insert($this->table_name, array(
                     'film_id' => $filmId,
-                    'diffusion_tmsp' => $diffusionTmsp,
+                    'diffusion_tmsp' => $dateDiffusionTmsp->format("Y-m-d H:i:s"),
                     'client_name' => $clientName,
                     "client_email" => $clientEmail,
                     "reserved_place" => $reservedPlace
@@ -180,7 +186,7 @@ class WP_Allocine_Rest_Api {
                 $reservation = $wpdb->update($this->table_name, array(
                     'id' => $existingReservation->id,
                     'film_id' => $filmId,
-                    'diffusion_tmsp' => $diffusionTmsp,
+                    'diffusion_tmsp' => $dateDiffusionTmsp->format("Y-m-d H:i:s"),
                     'client_name' => $clientName,
                     "client_email" => $clientEmail,
                     "reserved_place" => $reservedPlace

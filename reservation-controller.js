@@ -3,10 +3,10 @@ jQuery('document').ready(function () {
     reservationController.init();
 });
 
-var reservationController = 
+var reservationController =
 {
-    
-    bookingUrl: 'http://localhost:8888/sitevox/wp-json/allocine/reservation/add',
+
+    bookingUrl: 'http://wordpress.local/wp-json/allocine/reservation/add',
     selectedHoraire: '',
     selectedFilmId: '',
 
@@ -21,9 +21,9 @@ var reservationController =
 
         reservationController.selectedHoraire = movieController.horaires[parseInt(horaireIndex)];
         reservationController.selectedFilmId = reservationController.selectedHoraire.filmId;
-        let selectedFilm= movieController.films.get(reservationController.selectedHoraire.filmId);        
+        let selectedFilm= movieController.films.get(reservationController.selectedHoraire.filmId);
 
-        
+
         this.deleteAllReservationArea();
 
         let form =  '<div id="bookingForm">';
@@ -47,7 +47,7 @@ var reservationController =
          form += '</div>';
 
         selection.append(form);
-        
+
         reservationController.loadBehaviours();
         reservationController.scrollToTheRightPlace();
     },
@@ -60,16 +60,22 @@ var reservationController =
         jQuery('#sendReservation').click(function(){
 
             let formParams = new Object();
-            formParams.clientName = jQuery('input[name="clientName"]').val();
-            formParams.clientEmail = jQuery('input[name="clientEmail"]').val();
-            formParams.nbPlace = parseInt(jQuery('select[name="nbPlace"]').val());
-            formParams.filmId = reservationController.selectedFilmId;
-            formParams.horaire = reservationController.selectedHoraire.horaireToShow;
+            formParams.client_name = jQuery('input[name="clientName"]').val();
+            formParams.client_email = jQuery('input[name="clientEmail"]').val();
+            formParams.reserved_place = parseInt(jQuery('select[name="nbPlace"]').val());
+            formParams.film_id = reservationController.selectedFilmId;
+            formParams.diffusion_tmsp = reservationController.selectedHoraire.horaireToShow;
+
+            // On formate la date avec MomentJS
+            let diffusion_tmsp_date = moment(reservationController.selectedHoraire.horaireToShow, "DD-MM-YYYY HH:mm")
+            formParams.diffusion_tmsp = diffusion_tmsp_date.format("YYYY-MM-DD HH:mm:SS");
+
             jQuery.ajax({
                 type: 'POST',
-                // link to save up the 
-                url: reservationController.bookingUrl, 
+                // link to save up the
+                url: reservationController.bookingUrl,
                 data: formParams,
+                dataType: "JSON",
                 success: function(resultat, statut){
                     alert('Saved');
                     jQuery('.reservationArea').empty();
@@ -79,7 +85,7 @@ var reservationController =
                 },
                 complete: function ()
                 {
-                    
+
                 }
             });
 

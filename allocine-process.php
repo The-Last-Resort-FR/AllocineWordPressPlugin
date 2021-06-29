@@ -163,6 +163,8 @@ function acp_scripts() {
     wp_enqueue_script( "tlr-utilities");
     wp_register_script("movie-controller", plugin_dir_url( __FILE__ ) . '/movie-controller.js', array(), '1.0.0', true);
     wp_enqueue_script( "movie-controller");
+    wp_register_script("momentjs", "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js", array(), '2.29.1', true);
+    wp_enqueue_script( "momentjs");
     wp_register_script("reservation-controller", plugin_dir_url( __FILE__ ) . '/reservation-controller.js', array(), '1.0.0', true);
     wp_enqueue_script( "reservation-controller");
     wp_enqueue_style("list", plugin_dir_url( __FILE__ ) . '/list.css', array(), '1.0.0', 'all');
