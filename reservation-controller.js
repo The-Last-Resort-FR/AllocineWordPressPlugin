@@ -6,7 +6,7 @@ jQuery('document').ready(function () {
 var reservationController =
 {
 
-    bookingUrl: 'http://localhost/wp-json/allocine/reservation/add',
+    bookingUrl: 'http://wordpress.local/wp-json/allocine/reservation/add',
     selectedHoraire: '',
     selectedFilmId: '',
 
@@ -64,6 +64,7 @@ var reservationController =
             formParams.client_email = jQuery('input[name="clientEmail"]').val();
             formParams.reserved_place = parseInt(jQuery('select[name="nbPlace"]').val());
             formParams.film_id = reservationController.selectedFilmId;
+            formParams.film_title = movieController.films.get(reservationController.selectedHoraire.filmId).title;
             formParams.diffusion_tmsp = reservationController.selectedHoraire.horaireToShow;
 
             // On formate la date avec MomentJS

@@ -60,28 +60,27 @@ register_deactivation_hook( __FILE__, 'deactivate_wp_allocine' );
 
 
 /**
- * Load the required dependencies for this plugin.
+ * The core plugin class that is used to define internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine.php';
+
+/**
+ * Begins execution of the plugin.
  *
- * Include the following files that make up the plugin:
- *
- * - WP_Allocine_Rest_API. Rest API.
- *
- * Create an instance of the loader which will be used to register the hooks
- * with WordPress.
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
  *
  * @since    1.1.2
- * @access   public
  */
-function load_dependencies() {
-    /**
-     * Cette classe permet d'importer les routes de notre API Rest
-     */
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-rest-api.php';
-}
+function run_wp_allocine() {
 
-load_dependencies();
-$rest_api = new WP_Allocine_Rest_Api();
-$rest_api->register_rest_route();
+    $plugin = new WP_Allocine();
+}
+run_wp_allocine();
+
+
 
 
 function acp_get_xml_info()

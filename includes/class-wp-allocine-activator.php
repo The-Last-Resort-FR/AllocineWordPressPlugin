@@ -36,6 +36,7 @@ class WP_Allocine_Activator
             $sql = "CREATE TABLE IF NOT EXISTS $table_name (
                     `id`            int NOT NULL AUTO_INCREMENT PRIMARY KEY,
                      `film_id`        int NOT NULL ,
+                     `film_title`        varchar(100) NOT NULL ,
                      `diffusion_tmsp` timestamp NOT NULL ,
                      `client_name`    varchar(100) NOT NULL ,
                      `client_email`   varchar(45) NOT NULL ,

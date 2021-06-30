@@ -43,76 +43,15 @@ class WP_Allocine_Rest_Api {
                     'callback' => array($this, 'addReservation'),
                 )
             );
+            register_rest_route( 'allocine', '/reservation/list', array(
+                    'methods' => 'GET',
+                    'callback' => array($this, 'listReservations'),
+                )
+            );
         });
 
     }
 
-    /**
-     * Retourne une clé unique d'identification d'une séance pour un film donné
-     *
-     * @param $filmId Identifiant du film
-     * @param $diffusionTmsp Timestamp de la diffusion
-     * @return string Clé unique
-     */
-    public function getSeanceKey($filmId, $diffusionTmsp)
-    {
-        return $filmId . "_" . "$diffusionTmsp";
-    }
-
-    /**
-     * Retourne une réservation pour un film, une date et un mail donné
-     * @param $filmId
-     * @param $diffusionTmsp
-     * @param $email
-     * @return
-     * @throws Exception
-     */
-    public function getReservation($filmId, $diffusionTmsp, $mail) {
-        try{
-            global $wpdb;
-            $sql = $wpdb->prepare(
-                "SELECT *  FROM {$this->table_name}
-              WHERE film_id = %s AND diffusion_tmsp = %s AND client_email = %s;
-              ",
-                [$filmId, $diffusionTmsp, $mail]
-
-            );
-            $results = $wpdb->get_row($sql);
-
-            return $results;
-        }
-        catch(Exception $e)
-        {
-            throw new Exception();
-        }
-    }
-
-    /**
-     * Retourne le nombre de réservation pour une séance donnée (filmKey = concaténation filmId et dateDiffusion)
-     * @param $filmId Identifiant du film
-     * @param $diffusionTmsp Date de diffusion du film
-     * @return int Nombre de réservations
-     * @throws Exception
-     */
-    public function getNbReservations($filmId, $diffusionTmsp) {
-        try{
-            global $wpdb;
-            $sql = $wpdb->prepare(
-              "SELECT SUM(reserved_place) AS nbReservations FROM {$this->table_name}
-              WHERE film_id = %s AND diffusion_tmsp = %s;
-              ",
-                [$filmId, $diffusionTmsp]
-
-            );
-            $results = $wpdb->get_row($sql);
-
-            return intval($results->nbReservations);
-        }
-        catch(Exception $e)
-        {
-            throw new Exception();
-        }
-    }
 
     /**
      * http://wordpress.local/wp-json/allocine/reservation/add
@@ -122,17 +61,20 @@ class WP_Allocine_Rest_Api {
      *
      * @param $request_data WP_Rest_Request
      * @return string
+     * @throws Exception
      */
-    public function addReservation($request_data) {
+    public function addReservation(WP_REST_Request $request_data) {
 
         //TODO : Envoyer un mail de confirmation à l'admin et à l'utilisateur
 
         $response = [];
+        $allocineRepository = new WP_Allocine_Repository();
 
         // Regex servant à vérifier la validité d'une adresse mail
         $clientEmailRegX = '/(?:[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/i';
 
         $filmId = $request_data->get_param('film_id');
+        $filmTitle = $request_data->get_param('film_title');
         $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
         $clientName = $request_data->get_param("client_name");
         $clientEmail = $request_data->get_param("client_email");
@@ -146,6 +88,7 @@ class WP_Allocine_Rest_Api {
             !isset($filmId)
             || !isset($diffusionTmsp) || strtotime($diffusionTmsp) < strtotime("now")
             || !isset($clientName) || strlen($clientName) == 0
+            || !isset($filmTitle) || strlen($filmTitle) == 0
             || !isset($clientEmail) || !preg_match($clientEmailRegX, $clientEmail)
             || !isset($reservedPlace) || $reservedPlace <= 0 ) {
             $response = [
@@ -158,7 +101,7 @@ class WP_Allocine_Rest_Api {
         try{
             global $wpdb;
             // On récupère le nombre de réservation pour une séance donnée
-            $nbReservations = $this->getNbReservations($filmId, $diffusionTmsp);
+            $nbReservations = $allocineRepository->getNbReservations($filmId, $diffusionTmsp);
 
             if($nbReservations > MAX_USERS_RESERVATION)
             {
@@ -172,10 +115,11 @@ class WP_Allocine_Rest_Api {
             // On vérifie si une réservation existe avec l'adresse mail saisie
             // Si oui, on met à jour la réservation
             // Sinon, on ajoute la nouvelle réservation
-            $existingReservation = $this->getReservation($filmId,$diffusionTmsp,$clientEmail);
+            $existingReservation = $allocineRepository->getReservation($filmId,$diffusionTmsp,$clientEmail);
             if(empty($existingReservation)) {
                 $reservation = $wpdb->insert($this->table_name, array(
                     'film_id' => $filmId,
+                    'film_title' => $filmTitle,
                     'diffusion_tmsp' => $dateDiffusionTmsp->format("Y-m-d H:i:s"),
                     'client_name' => $clientName,
                     "client_email" => $clientEmail,
@@ -186,6 +130,7 @@ class WP_Allocine_Rest_Api {
                 $reservation = $wpdb->update($this->table_name, array(
                     'id' => $existingReservation->id,
                     'film_id' => $filmId,
+                    'film_title' => $filmTitle,
                     'diffusion_tmsp' => $dateDiffusionTmsp->format("Y-m-d H:i:s"),
                     'client_name' => $clientName,
                     "client_email" => $clientEmail,
@@ -220,6 +165,46 @@ class WP_Allocine_Rest_Api {
             ];
             return new WP_Rest_Response($response, $response["code"]);
 
+        }
+
+    }
+
+    /**
+     * Retourne la liste de toutes les réservations à venir
+     * http://wordpress.local/wp-json/allocine/reservation/list
+     * @param WP_REST_Request $request_data
+     * @return string
+     */
+    public function listReservations(WP_REST_Request $request_data) {
+        //TODO : https://stackoverflow.com/questions/42381521/how-to-get-current-logged-in-user-using-wordpress-rest-api
+
+        $response = [];
+        $allocineRepository = new WP_Allocine_Repository();
+
+        $filmId = $request_data->get_param('film_id');
+        $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
+
+        if(
+            !isset($filmId)
+            || !isset($diffusionTmsp) || strtotime($diffusionTmsp) < strtotime("now")) {
+                $response = [
+                    "code" => 400,
+                    "message" => __( "Paramètres invalides", 'wp-allocine' )
+                ];
+                return new WP_Rest_Response($response, $response["code"]);
+
+        }
+        try{
+            $reservations = $allocineRepository->findReservations();
+            return $reservations;
+        }
+        catch(Exception $e)
+        {
+            $response = [
+                "code" => 400,
+                "message" => __( "Impossible de récupérer les réservations.", 'wp-allocine' )
+            ];
+            return new WP_Rest_Response($response, $response["code"]);
         }
 
     }
