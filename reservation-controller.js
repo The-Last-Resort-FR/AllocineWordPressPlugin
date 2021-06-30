@@ -6,7 +6,7 @@ jQuery('document').ready(function () {
 var reservationController =
 {
 
-    bookingUrl: 'http://wordpress.local/wp-json/allocine/reservation/add',
+    bookingUrl: 'http://localhost/wp-json/allocine/reservation/add',
     selectedHoraire: '',
     selectedFilmId: '',
 
