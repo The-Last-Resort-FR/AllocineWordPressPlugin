@@ -7,6 +7,7 @@ var reservationController =
 {
 
     bookingUrl: 'http://localhost/wp-json/allocine/reservation/add',
+    reservedUrl: 'http://localhost/wp-json/allocine/reservation/get',
     selectedHoraire: '',
     selectedFilmId: '',
 
@@ -81,7 +82,7 @@ var reservationController =
                     jQuery('.reservationArea').empty();
                 },
                 error : function(resultat, statut, erreur){
-                    alert('Not saved');
+                    alert(resultat.responseJSON.message);
                 },
                 complete: function ()
                 {
@@ -90,5 +91,39 @@ var reservationController =
             });
 
         })
+    },
+    showBooking: function(selection, horaireIndex){
+        let reqData = new Object();
+        reservationController.selectedHoraire = movieController.horaires[parseInt(horaireIndex)];
+        reqData.film_Id = reservationController.selectedHoraire.filmId;
+        let diffusion_tmsp_date = moment(reservationController.selectedHoraire.horaireToShow, "DD-MM-YYYY HH:mm")
+        reqData.diffusion_tmsp = diffusion_tmsp_date.format("YYYY-MM-DD HH:mm:SS");
+        reqData.pwd_hash = movieController.pwdHash;
+
+        this.deleteAllReservationArea();
+
+        jQuery.ajax({
+            type: 'GET',
+            // get the reservation
+            url: reservationController.reservedUrl,
+            data: reqData,
+            dataType: "JSON",
+            success: function(resultat, statut){
+                alert('Saved');
+                jQuery('.reservationArea').empty();
+            },
+            error : function(resultat, statut, erreur){
+                alert(resultat.responseJSON.message);
+            },
+            complete: function ()
+            {
+
+            }
+        });
+
+
+        //console.log(diffusion_tmsp + " " + reservationController.selectedFilmId);
+        let list = document.createElement("div");
+        selection.append(list);
     }
 }

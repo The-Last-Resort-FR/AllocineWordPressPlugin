@@ -2,6 +2,7 @@
 jQuery('document').ready(function () {
 
     movieController.init();
+    movieController.authReservation();
     movieController.loadModel();
     movieController.renderList();
 });
@@ -10,6 +11,7 @@ var movieController =
 {
     parser: '',
     xmlDOM: '',
+    pwdHash: '',
 
     weeks: [],
     weekStartDates: [],
@@ -39,6 +41,19 @@ var movieController =
         movieController.selectedWeekIndex = 0;
         // we defined the current day Index
         movieController.selectedDayIndex = tlrUtil.getDayNumber();//daysToInt.get(new Date().toString().substring(0,3));
+    },
+    digestMessage: async function(message) {
+        let msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
+        let hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
+        let hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+        let hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+        return hashHex;
+    },
+    authReservation:async function() {
+        if (acp.showRes != 1) return;
+        let pwd = prompt("enter le mot de passe");
+        if (pwd != null)
+            this.pwdHash = await this.digestMessage(pwd);
     },
     removePastWeeks: function () 
     {
@@ -281,7 +296,10 @@ var movieController =
         jQuery('.film-horaire-btn').click(function(){
             //alert('Reservation '+jQuery(this).attr('index'));
             var selection = jQuery(this).parent().parent().find('div.reservationArea');
-            reservationController.injectBookingForm(selection,jQuery(this).attr('index'));
+            if(acp.showRes != 1)
+                reservationController.injectBookingForm(selection,jQuery(this).attr('index'));
+            else
+                reservationController.showBooking(selection,jQuery(this).attr('index'));
         })
         // the image and the title are clickable
         movieController.filmPackToBeAdded.forEach( fid => {

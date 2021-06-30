@@ -39,6 +39,11 @@ define( 'WP_ALLOCINE_VERSION', '1.1.2' );
 define( 'MAX_USERS_RESERVATION', 50 );
 
 /**
+ * Hash du mot de passe pour voir les réservations
+ */
+define('RES_PWD_HASH', "ef679ed17798d3142f267690dc70572d79258fdc7d15210cf9cc6f2f8aeed4e0");
+
+/**
  * Cette fonction definit le code qui sera lancé à l'activation du plugin
  */
 function activate_wp_allocine() {
@@ -178,12 +183,9 @@ function acp_shortcode_call()
 {
     $XML = acp_get_xml_info();
     $data = file_get_contents(get_theme_mod($XML['id']));
-    //wp_localize_script('make-html', 'acp', array(
-    //    'xmlContent'=> $data,
-    //    )
-    //);
     wp_localize_script('movie-controller', 'acp', array(
         'xmlContent'=> base64_encode($data),
+        'showRes' => '0',
         )
     );
 
@@ -191,3 +193,18 @@ function acp_shortcode_call()
 }
 
 add_shortcode('acpsc', 'acp_shortcode_call');
+
+
+function acp_shortcode_call_res()
+{
+    $XML = acp_get_xml_info();
+    $data = file_get_contents(get_theme_mod($XML['id']));
+    wp_localize_script('movie-controller', 'acp', array(
+        'xmlContent'=> base64_encode($data),
+        'showRes' => '1',
+        )
+    );
+    return file_get_contents("list.html", true);
+}
+
+add_shortcode('acpscr', 'acp_shortcode_call_res');
