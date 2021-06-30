@@ -1,0 +1,103 @@
+div#mosaic {
+    width: 100%;
+}
+
+div.cover {
+    width: 20%;
+    margin: 0px;
+    padding: 0px;
+    height: 150px;
+    float: left;
+}
+
+div.cover img {
+    height: 100%;
+    
+}
+
+div.dates {
+    margin: 0px;
+    padding: 0px;
+    width: 80%;
+    height: 150px;
+    float: right;
+}
+
+div.days {
+    margin: 0px 1px;
+    padding: 0px;
+    height: 50%;
+    text-align: center;
+}
+
+div.days button {
+    display: block;
+    float: left;
+    width: 14.285%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    font-size: small;
+}
+
+div.hours {
+    margin-bottom: 15px;
+    padding: 0px;
+    height: 50%;
+    text-align: left;
+    font-size: 1rem;
+    border: solid 1px black;
+    padding-left: 10px;
+}
+
+div.hours p {
+    margin: 0px;
+    padding: 0px;
+    line-height: 1.25;
+}
+
+span#bCancel {
+    float: right;
+}
+
+.film_infos{
+    display: flex !important;
+    flex-direction: row;
+}
+.film_img{
+    flex: 1;
+}
+.film_img img{
+    display : block;
+    width: 100%;
+    height: auto;
+}
+.film_desc{
+    flex: 4;
+}
+.film_desc_text{
+    font-size: 12px;
+}
+.film-week {
+    display: flex !important;
+    flex-direction: row;
+}
+.film-day {
+    flex: 1;
+}
+.film-version {
+    flex: 1;
+}
+.film-horaires {
+
+}
+.film-horaire-btn{
+    font-size: 15px;
+}
+.active { 
+    outline-offset: -6px; outline: dotted 3px yellow;
+} 
+
+html {
+    scroll-behavior: smooth;
+}

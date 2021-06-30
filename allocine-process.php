@@ -11,24 +11,80 @@
  * Plugin Name:       Allocine Process
  * Plugin URI:        https://github.com/The-Last-Resort-FR/AllocineWordPressPlugin
  * Description:       Get the data from Allocine and process it into various forms
- * Version:           1.0.0
+ * Version:           1.1.2
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            The Last Resort
  * Author URI:        https://github.com/The-Last-Resort-FR
- * Text Domain:       plugin-slug
+ * Text Domain:       wp-allocine
+ * Languages : /languages
  * License:           GPL v2 or later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 */
 
 // Exit if not called by WordPress
-if (!defined('ABSPATH')) 
+if (!defined('ABSPATH'))
 {
     exit;
 }
 
 
-function acp_get_xml_info() 
+/**
+ * Version actuelle du plugin
+ */
+define( 'WP_ALLOCINE_VERSION', '1.1.2' );
+/**
+ * Nombre maximum de réservations possible au sein d'une salle du Vox
+ */
+define( 'MAX_USERS_RESERVATION', 50 );
+
+/**
+ * Cette fonction definit le code qui sera lancé à l'activation du plugin
+ */
+function activate_wp_allocine() {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-activator.php';
+    WP_Allocine_Activator::activate();
+
+}
+
+/**
+ * Cette fonction definit le code qui sera lancé à la désactivation du plugin
+ */
+function deactivate_wp_allocine() {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-deactivator.php';
+    WP_Allocine_Deactivator::deactivate();
+}
+
+register_activation_hook( __FILE__, 'activate_wp_allocine' );
+register_deactivation_hook( __FILE__, 'deactivate_wp_allocine' );
+
+
+/**
+ * Load the required dependencies for this plugin.
+ *
+ * Include the following files that make up the plugin:
+ *
+ * - WP_Allocine_Rest_API. Rest API.
+ *
+ * Create an instance of the loader which will be used to register the hooks
+ * with WordPress.
+ *
+ * @since    1.1.2
+ * @access   public
+ */
+function load_dependencies() {
+    /**
+     * Cette classe permet d'importer les routes de notre API Rest
+     */
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-allocine-rest-api.php';
+}
+
+load_dependencies();
+$rest_api = new WP_Allocine_Rest_Api();
+$rest_api->register_rest_route();
+
+
+function acp_get_xml_info()
 {
 
 	return apply_filters(
@@ -40,7 +96,7 @@ function acp_get_xml_info()
 
 
 // build the array
-function acp_make_xml_infos( $XMLI ) 
+function acp_make_xml_infos( $XMLI )
 {
 
 	$XMLI = array(
@@ -60,9 +116,9 @@ function acp_make_xml_infos( $XMLI )
 add_filter( 'acp_xml_infos', 'acp_make_xml_infos', 10, 1 );
 
 // add the entry to the wp customize menu
-function acp_xml_customizer_settings( $wp_customize ) 
+function acp_xml_customizer_settings( $wp_customize )
 {
- 
+
     $xml_infos = acp_get_xml_info();
 
     if ( ! empty( $xml_infos ) ) {
@@ -94,7 +150,7 @@ function acp_xml_customizer_settings( $wp_customize )
             'description' => $xml_infos['description'],
         )
     );
-} 
+}
 
 add_action( 'customize_register', 'acp_xml_customizer_settings' );
 
@@ -107,6 +163,11 @@ function acp_scripts() {
     wp_enqueue_script( "tlr-utilities");
     wp_register_script("movie-controller", plugin_dir_url( __FILE__ ) . '/movie-controller.js', array(), '1.0.0', true);
     wp_enqueue_script( "movie-controller");
+    wp_register_script("momentjs", "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js", array(), '2.29.1', true);
+    wp_enqueue_script( "momentjs");
+    wp_register_script("reservation-controller", plugin_dir_url( __FILE__ ) . '/reservation-controller.js', array(), '1.0.0', true);
+    wp_enqueue_script( "reservation-controller");
+    wp_enqueue_style("list", plugin_dir_url( __FILE__ ) . '/list.css', array(), '1.0.0', 'all');
     //wp_enqueue_style("make-html");
 }
 add_action( 'wp_enqueue_scripts', 'acp_scripts' );
@@ -117,15 +178,16 @@ function acp_shortcode_call()
 {
     $XML = acp_get_xml_info();
     $data = file_get_contents(get_theme_mod($XML['id']));
-    //wp_localize_script('make-html', 'acp', array( 
+    //wp_localize_script('make-html', 'acp', array(
     //    'xmlContent'=> $data,
-    //    ) 
-    //);    
-    wp_localize_script('movie-controller', 'acp', array( 
+    //    )
+    //);
+    wp_localize_script('movie-controller', 'acp', array(
         'xmlContent'=> base64_encode($data),
         )
     );
-    return file_get_contents("widget.html", true);
+
+    return file_get_contents("list.html", true);
 }
 
 add_shortcode('acpsc', 'acp_shortcode_call');
