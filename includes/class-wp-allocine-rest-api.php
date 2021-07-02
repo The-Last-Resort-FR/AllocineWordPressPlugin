@@ -287,7 +287,6 @@ class WP_Allocine_Rest_Api {
     public function getReservationList($request_data) {
 
         $response = [];
-
         $pwdHash = $request_data->get_param("pwd_hash");
         if(!($pwdHash == RES_PWD_HASH))
         {
@@ -297,29 +296,26 @@ class WP_Allocine_Rest_Api {
             ];
             return $response;
         }
-        
-        $filmId = $request_data->get_param('film_id');
-        $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
-        $res = $this->findReservations($filmId);
-        
-        // if ($res->num_rows > 0)
-        // {
-        //     while($row = $res->fetch_assoc()) {
-        //         error_log("Name: " . $row["client_name"]. " - email: " . $row["client_email"]. " - nb place: " . $row["reserved_place"]);
-        //     }
-        // }
-        return $res;
-        try {
 
+        try {
+            
+            $filmId = $request_data->get_param('film_id');
+            $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
+            $res = $this->findReservations($filmId);
+            $response = [
+                "code" => 200,
+                "message" => __( "success", 'wp-allocine' ),
+                $res
+            ];
+            return $response;
         }
         catch (Exception $e) {
-
+            $response = [
+                "code" => 500,
+                "message" => __( "failed", 'wp-allocine' ),
+                "data" => $res
+            ];
+            return $response;
         }
-        $response = [
-            "code" => 200,
-            "message" => __( "failed", 'wp-allocine' ),
-            "data" => $res
-        ];
-        return $response;
     }
 }

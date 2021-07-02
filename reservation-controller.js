@@ -102,7 +102,6 @@ var reservationController =
         reqData.diffusion_tmsp = diffusion_tmsp_date.format("YYYY-MM-DD HH:mm:SS");
         reqData.pwd_hash = movieController.pwdHash;
         let res = [];
-        let display = document.createElement("p");
 
         this.deleteAllReservationArea();
 
@@ -113,16 +112,29 @@ var reservationController =
             data: reqData,
             dataType: "JSON",
             success: function(resultat, statut){
-                alert('Saved');
+                if(resultat.code != 200)
+                {
+                    alert(resultat.message);
+                    return;
+                }
+
                 jQuery('.reservationArea').empty();
+                let div = document.createElement("div");
+                div.style.border = "2px solid";
+                div.innerText = "reservation : ";
                 resultat.forEach(row => {
                     if (row.film_id == reqData.film_Id)
-                        display.innerText += row.diffusion_tmsp + " | " +  row.client_name + " | " + row.client_email + " | " + row.reserved_place + "\n";
+                    {
+                        let display = document.createElement("p");
+                        display.innerText = row.diffusion_tmsp + " | " +  row.client_name + " | " + row.client_email + " | " + row.reserved_place + "\n";
+                        div.append(display);
+                    }
                 });
-                jQuery('.reservationArea').append(display);
+                let mosaic = document.getElementById("mosaic");
+                mosaic.append(div);
             },
             error : function(resultat, statut, erreur){
-                alert(resultat.responseJSON.message);
+                alert(resultat.message);
             },
             complete: function ()
             {
