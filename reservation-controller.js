@@ -66,7 +66,9 @@ var reservationController =
             formParams.reserved_place = parseInt(jQuery('select[name="nbPlace"]').val());
             formParams.film_id = reservationController.selectedFilmId;
             formParams.diffusion_tmsp = reservationController.selectedHoraire.horaireToShow;
-
+            let created_on = moment(new Date().toISOString(), "YYYY-MM-DDTHH:mm:ss.z");
+            formParams.created_on = created_on.format("YYYY-MM-DD HH:mm:SS");
+            console.log(formParams.created_on);
             // On formate la date avec MomentJS
             let diffusion_tmsp_date = moment(reservationController.selectedHoraire.horaireToShow, "DD-MM-YYYY HH:mm")
             formParams.diffusion_tmsp = diffusion_tmsp_date.format("YYYY-MM-DD HH:mm:SS");
@@ -99,6 +101,8 @@ var reservationController =
         let diffusion_tmsp_date = moment(reservationController.selectedHoraire.horaireToShow, "DD-MM-YYYY HH:mm")
         reqData.diffusion_tmsp = diffusion_tmsp_date.format("YYYY-MM-DD HH:mm:SS");
         reqData.pwd_hash = movieController.pwdHash;
+        let res = [];
+        let display = document.createElement("p");
 
         this.deleteAllReservationArea();
 
@@ -111,6 +115,11 @@ var reservationController =
             success: function(resultat, statut){
                 alert('Saved');
                 jQuery('.reservationArea').empty();
+                resultat.forEach(row => {
+                    if (row.film_id == reqData.film_Id)
+                        display.innerText += row.diffusion_tmsp + " | " +  row.client_name + " | " + row.client_email + " | " + row.reserved_place + "\n";
+                });
+                jQuery('.reservationArea').append(display);
             },
             error : function(resultat, statut, erreur){
                 alert(resultat.responseJSON.message);
@@ -120,6 +129,7 @@ var reservationController =
 
             }
         });
+
 
 
         //console.log(diffusion_tmsp + " " + reservationController.selectedFilmId);

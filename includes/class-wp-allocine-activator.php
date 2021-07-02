@@ -37,6 +37,7 @@ class WP_Allocine_Activator
                     `id`            int NOT NULL AUTO_INCREMENT PRIMARY KEY,
                      `film_id`        int NOT NULL ,
                      `diffusion_tmsp` timestamp NOT NULL ,
+                     `created_on`     varchar(45) NOT NULL ,
                      `client_name`    varchar(100) NOT NULL ,
                      `client_email`   varchar(45) NOT NULL ,
                      `reserved_place` int NOT NULL 

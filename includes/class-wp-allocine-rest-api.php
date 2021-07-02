@@ -122,14 +122,47 @@ class WP_Allocine_Rest_Api {
         try{
             global $wpdb;
             $sql = $wpdb->prepare(
-              "SELECT * FROM {$this->table_name}
+              "SELECT * FROM {$this->table_name};"
+            );
+            $results = $wpdb->get_results($sql);
+            return $results;
+        }
+        catch(Exception $e)
+        {
+            throw new Exception();
+        }
+    }
+
+    public function findReservationsBySeance($filmId, $diffusionTmsp) {
+        try{
+            global $wpdb;
+            $sql = $wpdb->prepare(
+                "SELECT * FROM {$this->table_name}
               WHERE film_id = %s AND diffusion_tmsp = %s;
               ",
                 [$filmId, $diffusionTmsp]
 
             );
-            $results = $wpdb->get_row($sql);
-            error_log($results->num_rows);
+            $results = $wpdb->get_results($sql);
+
+            return $results;
+        }
+        catch(Exception $e)
+        {
+            throw new Exception();
+        }
+    }
+
+    public function findReservations($filmId) {
+        try{
+            global $wpdb;
+
+            $sql = $wpdb->prepare(
+                "SELECT * FROM {$this->table_name}
+              WHERE  diffusion_tmsp >= NOW();
+              ");
+            $results = $wpdb->get_results($sql);
+
             return $results;
         }
         catch(Exception $e)
@@ -161,6 +194,7 @@ class WP_Allocine_Rest_Api {
         $clientName = $request_data->get_param("client_name");
         $clientEmail = $request_data->get_param("client_email");
         $reservedPlace = $request_data->get_param("reserved_place");
+        $createdOn = $request_data->get_param("created_on");
 
         $dateDiffusionTmsp = new DateTime($diffusionTmsp);
 
@@ -202,6 +236,7 @@ class WP_Allocine_Rest_Api {
                     'film_id' => $filmId,
                     'diffusion_tmsp' => $dateDiffusionTmsp->format("Y-m-d H:i:s"),
                     'client_name' => $clientName,
+                    'created_on' => $createdOn,
                     "client_email" => $clientEmail,
                     "reserved_place" => $reservedPlace
                 ));
@@ -212,6 +247,7 @@ class WP_Allocine_Rest_Api {
                     'film_id' => $filmId,
                     'diffusion_tmsp' => $dateDiffusionTmsp->format("Y-m-d H:i:s"),
                     'client_name' => $clientName,
+                    'created_on' => $createdOn,
                     "client_email" => $clientEmail,
                     "reserved_place" => $reservedPlace
                 ),
@@ -264,15 +300,15 @@ class WP_Allocine_Rest_Api {
         
         $filmId = $request_data->get_param('film_id');
         $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
-        $res = $this->getReservationsList($filmId, $diffusionTmsp);
+        $res = $this->findReservations($filmId);
         
-        if ($res->num_rows > 0)
-        {
-            while($row = $res->fetch_assoc()) {
-                error_log("Name: " . $row["client_name"]. " - email: " . $row["client_email"]. " - nb place: " . $row["reserved_place"]);
-            }
-        }
-
+        // if ($res->num_rows > 0)
+        // {
+        //     while($row = $res->fetch_assoc()) {
+        //         error_log("Name: " . $row["client_name"]. " - email: " . $row["client_email"]. " - nb place: " . $row["reserved_place"]);
+        //     }
+        // }
+        return $res;
         try {
 
         }
