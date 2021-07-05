@@ -39,4 +39,28 @@ Just gather data from the Allociné exorted xml and display it with a shortcode.
 
     - On the desired page, add a shortcode block and enter the code \[acpsc\].
 
+5. Make the pluing's admin page
+
+    - Create a new private page and places a shortcode block and enter the following code \[acpscr\].
+
+    - Change the password for the admin page in allocine-process.php at the `define('RES_PWD_HASH', "pwdhash");` it can be generated using `echo hash('sha256', 'pwd');`.
+
     - Good job you're all set up !
+
+## Troubles with reservation
+
+- Try to manually fix the DB
+
+```sql
+USE wpdb;
+DROP TABLE IF EXISTS wp_allocine_reservations;
+CREATE TABLE IF NOT EXISTS wp_allocine_reservations (
+                    `id`            int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                     `film_id`        int NOT NULL ,
+                     `diffusion_tmsp` timestamp NOT NULL ,
+                     `created_on`     varchar(45) NOT NULL ,
+                     `client_name`    varchar(100) NOT NULL ,
+                     `client_email`   varchar(45) NOT NULL ,
+                     `reserved_place` int NOT NULL 
+               );
+```
