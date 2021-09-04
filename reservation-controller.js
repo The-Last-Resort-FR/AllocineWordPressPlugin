@@ -6,7 +6,7 @@ jQuery('document').ready(function () {
 var reservationController =
 {
 
-    bookingUrl: 'http://wordpress.local/wp-json/allocine/reservation/add',
+    bookingUrl: 'http://localhost:8888/sitevox/wp-json/allocine/reservation/add',
     selectedHoraire: '',
     selectedFilmId: '',
 
@@ -22,34 +22,38 @@ var reservationController =
         reservationController.selectedHoraire = movieController.horaires[parseInt(horaireIndex)];
         reservationController.selectedFilmId = reservationController.selectedHoraire.filmId;
         let selectedFilm= movieController.films.get(reservationController.selectedHoraire.filmId);
+        let now = new Date();
+        if(movieController.horaires[parseInt(horaireIndex)].horaireTmsp > now)
+        {
+            this.deleteAllReservationArea();
 
+            let form =  '<div id="bookingForm">';
+             form += '   <fieldset>';
+             form += '      <legend>Reserver:<b>'+selectedFilm.title+'</b> pour le '+reservationController.selectedHoraire.horaireToShow+'</legend>'
+             form += '      <label for="clientName">Nom</label><br>';
+             form += '      <input type="text" name="clientName"></input><br>';
+             form += '      <label for="clientEmail">Email</label><br>';
+             form += '      <input type="text" name="clientEmail"></input><br>';
+             form += '      <label for="clientEmail">Nombre de places</label><br>';
+             form += '      <select name="nbPlace">';
+             form += '          <option value="1">1</option>';
+             form += '          <option value="2">2</option>';
+             form += '          <option value="3">3</option>';
+             form += '          <option value="4">4</option>';
+             form += '          <option value="5">5</option>';
+             form += '          <option value="6">6</option>';
+             form += '      </select>';
+             form += '      <button id="sendReservation">Réserver</button>';
+             form += '   </fieldset>';
+             form += '</div>';
 
-        this.deleteAllReservationArea();
+            selection.append(form);
 
-        let form =  '<div id="bookingForm">';
-         form += '   <fieldset>';
-         form += '      <legend>Reserver:<b>'+selectedFilm.title+'</b> pour le '+reservationController.selectedHoraire.horaireToShow+'</legend>'
-         form += '      <label for="clientName">Nom</label><br>';
-         form += '      <input type="text" name="clientName"></input><br>';
-         form += '      <label for="clientEmail">Email</label><br>';
-         form += '      <input type="text" name="clientEmail"></input><br>';
-         form += '      <label for="clientEmail">Nombre de places</label><br>';
-         form += '      <select name="nbPlace">';
-         form += '          <option value="1">1</option>';
-         form += '          <option value="2">2</option>';
-         form += '          <option value="3">3</option>';
-         form += '          <option value="4">4</option>';
-         form += '          <option value="5">5</option>';
-         form += '          <option value="6">6</option>';
-         form += '      </select>';
-         form += '      <button id="sendReservation">Réserver</button>';
-         form += '   </fieldset>';
-         form += '</div>';
+            reservationController.loadBehaviours();
+            reservationController.scrollToTheRightPlace();
 
-        selection.append(form);
-
-        reservationController.loadBehaviours();
-        reservationController.scrollToTheRightPlace();
+        }
+        
     },
 
     scrollToTheRightPlace: function(){
@@ -78,11 +82,12 @@ var reservationController =
                 data: formParams,
                 dataType: "JSON",
                 success: function(resultat, statut){
-                    alert('Saved');
+                    alert('Votre réservation a bien été enregistrée.');
                     jQuery('.reservationArea').empty();
                 },
                 error : function(resultat, statut, erreur){
-                    alert('Not saved');
+                    alert('Données incorrectes');
+                    
                 },
                 complete: function ()
                 {

@@ -125,4 +125,29 @@ class WP_Allocine_Repository {
         }
     }
 
+     /**
+     * Remove la réservation 
+     * @param $filmId
+     * @param $diffusionTmsp
+     * @return int
+     * @throws Exception
+     */
+    public function removeReservation($clientEmail, $filmId, $diffusionTmsp) {
+        try{
+            global $wpdb;
+            $sql = $wpdb->prepare(
+                "DELETE FROM {$this->table_name}
+              WHERE film_id = %s AND diffusion_tmsp = %s AND client_email = %s;
+              ",
+                [$filmId, $diffusionTmsp, $clientEmail]
+            );
+            $results = $wpdb->query($sql);
+            return $results;
+        }
+        catch(Exception $e)
+        {
+            throw new Exception();
+        }
+    }
+
 }

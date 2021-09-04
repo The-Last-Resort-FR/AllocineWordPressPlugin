@@ -14,7 +14,22 @@ Just gather data from the Allociné exorted xml and display it with a shortcode.
 
     - Make an SQL Database with PHPMyAdmin from MAMP and complete the WordPress installation, to connect to WordPress you can go to [localhost](http://localhost/) ([more help can be found here](https://wordpress.org/support/article/how-to-install-wordpress/)).
 
-3. Install the plugin
+3. create a db
+USE levoxfrtysdb;
+DROP TABLE IF EXISTS wp_allocine_reservations;
+CREATE TABLE IF NOT EXISTS wp_allocine_reservations (
+                    `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                     `film_id` int NOT NULL,
+                     `diffusion_tmsp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                     `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                     `client_name` varchar(200) NOT NULL,
+                     `film_title` varchar(200) NOT NULL,
+                     `client_email` varchar(45) NOT NULL,
+                     `reserved_place` int NOT NULL 
+               );
+
+
+4. Install the plugin
 
     - Go into the WordPress plugin's folder.
   
@@ -33,10 +48,29 @@ Just gather data from the Allociné exorted xml and display it with a shortcode.
   
     - Enable the plugin.
 
-4. Use the plugin
+5. Change the path in reservation-controller.js
+    bookingUrl: 'https://www.nouveausite.levox.fr/wp-json/allocine/reservation/add',
+
+comme dans le fichier 
+    listUrl: 'https://www.nouveausite.levox.fr/wp-json/allocine/reservation/list',
+    removeUrl: 'https://www.nouveausite.levox.fr/wp-json/allocine/reservation/remove',
+
+6. Change wp_config.php
+Enlever les options de debug
+
+7. Fixer la jauge dans allocine-process.php 
+define( 'MAX_USERS_RESERVATION', 70 );
+
+8. Use the plugin
 
     - In the WordPress personalisation menu look for the URL du fichier XML Allociné section and then enter there the url to your own Allociné exported XML.
 
     - On the desired page, add a shortcode block and enter the code \[acpsc\].
 
     - Good job you're all set up !
+
+
+    Try to manually fix the DB
+
+
+

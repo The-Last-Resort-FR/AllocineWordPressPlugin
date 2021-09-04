@@ -36,7 +36,7 @@ define( 'WP_ALLOCINE_VERSION', '1.1.2' );
 /**
  * Nombre maximum de réservations possible au sein d'une salle du Vox
  */
-define( 'MAX_USERS_RESERVATION', 50 );
+define( 'MAX_USERS_RESERVATION', 70 );
 
 /**
  * Cette fonction definit le code qui sera lancé à l'activation du plugin
@@ -176,13 +176,16 @@ add_action( 'wp_enqueue_scripts', 'acp_scripts' );
 function acp_shortcode_call()
 {
     $XML = acp_get_xml_info();
+
+    error_log('-----------');
+    error_log($XML['id']);
+    error_log(get_theme_mod($XML['id']));
+    // https://api.levox.fr/allocineseances.xml
     $data = file_get_contents(get_theme_mod($XML['id']));
-    //wp_localize_script('make-html', 'acp', array(
-    //    'xmlContent'=> $data,
-    //    )
-    //);
+
     wp_localize_script('movie-controller', 'acp', array(
         'xmlContent'=> base64_encode($data),
+        //'urlContent'=> "https://api.levox.fr/allocineseances.xml",
         )
     );
 

@@ -20,7 +20,8 @@
  * @author     Aurélien Vita aurelien.vita@solidarcom.fr
  */
 
-class WP_Allocine_Rest_Api {
+class WP_Allocine_Rest_Api 
+{
 
     public $table_name;
     /**
@@ -48,6 +49,12 @@ class WP_Allocine_Rest_Api {
                     'callback' => array($this, 'listReservations'),
                 )
             );
+            register_rest_route( 'allocine', '/reservation/remove', array(
+                    'methods' => 'DELETE',
+                    'callback' => array($this, 'removeReservation'),
+                )
+            );
+
         });
 
     }
@@ -79,13 +86,10 @@ class WP_Allocine_Rest_Api {
         $clientName = $request_data->get_param("client_name");
         $clientEmail = $request_data->get_param("client_email");
         $reservedPlace = $request_data->get_param("reserved_place");
-
         $dateDiffusionTmsp = new DateTime($diffusionTmsp);
 
-
         // Vérification des paramètres rentrés (réservation >=1, date valide, email valide, ...)
-        if(
-            !isset($filmId)
+        if( !isset($filmId)
             || !isset($diffusionTmsp) || strtotime($diffusionTmsp) < strtotime("now")
             || !isset($clientName) || strlen($clientName) == 0
             || !isset($filmTitle) || strlen($filmTitle) == 0
@@ -96,7 +100,6 @@ class WP_Allocine_Rest_Api {
                 "message" => __( "Paramètres invalides", 'wp-allocine' )
             ];
             return new WP_Rest_Response($response, $response["code"]);
-
         }
         try{
             global $wpdb;
@@ -164,9 +167,7 @@ class WP_Allocine_Rest_Api {
                 "message" => __( "Impossible d'ajouter la réservation.", 'wp-allocine' )
             ];
             return new WP_Rest_Response($response, $response["code"]);
-
         }
-
     }
 
     /**
@@ -181,19 +182,6 @@ class WP_Allocine_Rest_Api {
         $response = [];
         $allocineRepository = new WP_Allocine_Repository();
 
-        $filmId = $request_data->get_param('film_id');
-        $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
-
-        if(
-            !isset($filmId)
-            || !isset($diffusionTmsp) || strtotime($diffusionTmsp) < strtotime("now")) {
-                $response = [
-                    "code" => 400,
-                    "message" => __( "Paramètres invalides", 'wp-allocine' )
-                ];
-                return new WP_Rest_Response($response, $response["code"]);
-
-        }
         try{
             $reservations = $allocineRepository->findReservations();
             return $reservations;
@@ -206,6 +194,35 @@ class WP_Allocine_Rest_Api {
             ];
             return new WP_Rest_Response($response, $response["code"]);
         }
+    }
 
+
+        /**
+     * Enlève une réservation qui correspond à la personne, au film_id et au diffusion_tmsp
+     * http://wordpress.local/wp-json/allocine/reservation/remove
+     * @param WP_REST_Request $request_data
+     * @return string
+     */
+    public function removeReservation(WP_REST_Request $request_data) {
+        //TODO : https://stackoverflow.com/questions/42381521/how-to-get-current-logged-in-user-using-wordpress-rest-api
+        $res = [];
+        $response = [];
+        $allocineRepository = new WP_Allocine_Repository();
+
+        $clientEmail = $request_data->get_param('client_email');
+        $filmId = $request_data->get_param('film_id');
+        $diffusionTmsp = $request_data->get_param("diffusion_tmsp");
+
+        if(    !isset($clientEmail)
+            || !isset($filmId)
+            || !isset($diffusionTmsp)) {
+                $response = [
+                    "code" => 400,
+                    "message" => __( "Paramètres invalides", 'wp-allocine' )
+                ];
+                return new WP_Rest_Response($response, $response["code"]);
+        }
+        $res = $allocineRepository->removeReservation($clientEmail,$filmId,$diffusionTmsp);
+        return $res;
     }
 }

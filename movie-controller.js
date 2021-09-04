@@ -278,6 +278,7 @@ var movieController =
         jQuery('.Mon').click(function () { movieController.showOneSelectedDay(5)});
         jQuery('.Tue').click(function () { movieController.showOneSelectedDay(6)});
         // when we press a horaire button
+
         jQuery('.film-horaire-btn').click(function(){
             //alert('Reservation '+jQuery(this).attr('index'));
             var selection = jQuery(this).parent().parent().find('div.reservationArea');
