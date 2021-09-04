@@ -20,7 +20,7 @@
  * @author     Aurélien Vita aurelien.vita@solidarcom.fr
  */
 
-class WP_Allocine_Rest_Api 
+class WP_Allocine_Rest_Api
 {
 
     public $table_name;
@@ -88,6 +88,8 @@ class WP_Allocine_Rest_Api
         $reservedPlace = $request_data->get_param("reserved_place");
         $dateDiffusionTmsp = new DateTime($diffusionTmsp);
 
+        $max_users_reservation = AVTools::settings('wp_allocine_max_users_reservation');
+
         // Vérification des paramètres rentrés (réservation >=1, date valide, email valide, ...)
         if( !isset($filmId)
             || !isset($diffusionTmsp) || strtotime($diffusionTmsp) < strtotime("now")
@@ -106,7 +108,7 @@ class WP_Allocine_Rest_Api
             // On récupère le nombre de réservation pour une séance donnée
             $nbReservations = $allocineRepository->getNbReservations($filmId, $diffusionTmsp);
 
-            if($nbReservations > MAX_USERS_RESERVATION)
+            if($nbReservations > $max_users_reservation)
             {
                 $response = [
                     "code" => 400,
@@ -148,7 +150,7 @@ class WP_Allocine_Rest_Api
             }
             else{
                 // On retourne le nbr de réservations restantes
-                $nbPlacesLeft = MAX_USERS_RESERVATION - ($nbReservations + $reservedPlace);
+                $nbPlacesLeft = $max_users_reservation - ($nbReservations + $reservedPlace);
 
                 return new WP_Rest_Response([
                    "code" => 200,

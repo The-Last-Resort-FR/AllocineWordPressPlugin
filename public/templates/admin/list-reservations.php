@@ -28,8 +28,8 @@ jQuery('document').ready(function () {
 
 var reservationAdminController = {
 
-	listUrl: 'http://localhost:8888/sitevox/wp-json/allocine/reservation/list',
-	removeUrl: 'http://localhost:8888/sitevox/wp-json/allocine/reservation/remove',
+	listUrl: document.location.origin + '/wp-json/allocine/reservation/list',
+	removeUrl: document.location.origin + '/wp-json/allocine/reservation/remove',
     films : new Map(),
     selectedSeance: '',
     nbReservations: 0,
@@ -100,7 +100,7 @@ var reservationAdminController = {
 			{
 				seance.forEach((resa) => {
 					index++;
-					id = 'btn'+index; 
+					id = 'btn'+index;
 					ajout = '<tr><td>'+resa.client_name+'<td>';
 					ajout += '<td>'+resa.client_email+'<td>';
 					ajout += '<td>'+resa.reserved_place+'<td>';
@@ -113,7 +113,7 @@ var reservationAdminController = {
 				});
 			}
 		});
-		
+
 		jQuery("#total").text('Total des places réservées pour cette séance: '+reservationAdminController.nbReservations);
 	},
 	removeReservation: function (client_email){

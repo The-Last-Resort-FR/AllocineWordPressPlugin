@@ -60,6 +60,11 @@ class WP_Allocine {
     function load_dependencies() {
 
         /**
+         * Cette classe permet d'importer les fonctions utiles au projet
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-avtools.php';
+
+        /**
          * Cette classe permet d'importer les méthodes de DAO
          */
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-allocine-repository.php';
@@ -87,6 +92,8 @@ class WP_Allocine {
 
         add_action('admin_enqueue_scripts', array($plugin_admin, 'enqueue_scripts'), 10, 1);
         add_action('admin_menu', array($plugin_admin, 'settings_page'), 10, 1);
+        add_action('admin_init', array($plugin_admin, 'settings_init'), 10, 1);
+
     }
 
     function define_rest_route() {

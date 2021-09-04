@@ -47,7 +47,17 @@ class WP_Allocine_Activator
             dbDelta($sql);
         }
 
-        // On ajoute une option pour stocker la version du plugin dans les options Wordpress
+        // Si l'option contenant les propriétés de WP_Allocine n'existe pas, on préremplit les réglages
+        // (1ère utilisation
+        if( ! get_option( 'wp_allocine_settings' ) ) {
+            $options = [];
+            $options['wp_allocine_max_users_reservation'] = 70;
+            $options['wp_allocine_api_url'] = "https://api.levox.fr/allocineseances.xml";
+            add_option('wp_allocine_settings', $options);
+        }
+
+
+            // On ajoute une option pour stocker la version du plugin dans les options Wordpress
         $plugin_data = get_plugin_data(__FILE__);
         add_option('wp_allocine', WP_ALLOCINE_VERSION);
 
