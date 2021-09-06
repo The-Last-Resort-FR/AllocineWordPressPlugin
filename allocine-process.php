@@ -100,8 +100,6 @@ add_action( 'wp_enqueue_scripts', 'acp_scripts' );
 // function called by the shortcode
 function acp_shortcode_call()
 {
-    error_log('-----------');
-    error_log(AVTools::settings("wp_allocine_api_url"));
     // https://api.levox.fr/allocineseances.xml
     $data = file_get_contents(AVTools::settings("wp_allocine_api_url"));
 

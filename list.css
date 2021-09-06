@@ -94,9 +94,12 @@ span#bCancel {
 .film-horaire-btn{
     font-size: 15px;
 }
-.active { 
+.film-day.active { 
     outline-offset: -6px; outline: dotted 3px yellow;
 } 
+.film-horaires > .active {
+    outline-offset: -6px; outline: dotted 3px yellow;
+}
 
 html {
     scroll-behavior: smooth;
