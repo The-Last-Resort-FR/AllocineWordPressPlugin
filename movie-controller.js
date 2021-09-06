@@ -1,9 +1,13 @@
 
 jQuery('document').ready(function () {
 
-    movieController.init();
-    movieController.loadModel();
-    movieController.renderList();
+    if(typeof acp !== 'undefined')
+    {   
+        movieController.init();
+        movieController.loadModel();
+        movieController.renderList();
+    }
+   
 });
 
 var movieController = 

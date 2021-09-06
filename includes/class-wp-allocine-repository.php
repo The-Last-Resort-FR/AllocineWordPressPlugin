@@ -52,14 +52,14 @@ class WP_Allocine_Repository {
      * @return int Nombre de réservations
      * @throws Exception
      */
-    public function getNbReservations($filmId, $diffusionTmsp) {
+    public function getNbReservations($filmId, $diffusionTmsp, $clientEmail) {
         try{
             global $wpdb;
             $sql = $wpdb->prepare(
                 "SELECT SUM(reserved_place) AS nbReservations FROM {$this->table_name}
-              WHERE film_id = %s AND diffusion_tmsp = %s;
+              WHERE film_id = %s AND diffusion_tmsp = %s AND client_email <> %s;
               ",
-                [$filmId, $diffusionTmsp]
+                [$filmId, $diffusionTmsp, $clientEmail]
 
             );
             $results = $wpdb->get_row($sql);

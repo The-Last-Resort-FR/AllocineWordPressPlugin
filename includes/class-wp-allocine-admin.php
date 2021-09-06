@@ -79,16 +79,6 @@ class WP_Allocine_Admin {
         include $template;
     }
 
-        /**
-     * Function permettant d'afficher la liste des réservations dans un template séparé
-     */
-    public static function list_xml_url_display()
-    {
-        $template = plugin_dir_path( dirname( __FILE__ ) ) . 'public/templates/admin/list-xml-url.php';
-        ob_start();
-        include $template;
-    }
-
 
     public static function settings_display( $active_tab = '' ) {
         ?>

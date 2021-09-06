@@ -106,13 +106,13 @@ class WP_Allocine_Rest_Api
         try{
             global $wpdb;
             // On récupère le nombre de réservation pour une séance donnée
-            $nbReservations = $allocineRepository->getNbReservations($filmId, $diffusionTmsp);
+            $nbReservations = $allocineRepository->getNbReservations($filmId, $diffusionTmsp, $clientEmail);
 
-            if($nbReservations > $max_users_reservation)
+            if(($nbReservations+$reservedPlace) > $max_users_reservation)
             {
                 $response = [
                     "code" => 400,
-                    "message" => __( "Aucune disponibilité restante.", 'wp-allocine' )
+                    "message" => __( "Réservation impossible: plus de place restante", 'wp-allocine' )
                 ];
                 return new WP_Rest_Response($response, $response["code"]);
             }

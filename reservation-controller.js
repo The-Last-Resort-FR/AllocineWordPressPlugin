@@ -6,7 +6,7 @@ jQuery('document').ready(function () {
 var reservationController =
 {
 
-    bookingUrl: document.location.origin + '/wp-json/allocine/reservation/add',
+    bookingUrl: document.location.origin + '/sitevox/wp-json/allocine/reservation/add',
     selectedHoraire: '',
     selectedFilmId: '',
 
@@ -86,7 +86,7 @@ var reservationController =
                     jQuery('.reservationArea').empty();
                 },
                 error : function(resultat, statut, erreur){
-                    alert('Données incorrectes');
+                    alert(resultat.responseJSON.message);
 
                 },
                 complete: function ()

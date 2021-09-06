@@ -28,8 +28,8 @@ jQuery('document').ready(function () {
 
 var reservationAdminController = {
 
-	listUrl: document.location.origin + '/wp-json/allocine/reservation/list',
-	removeUrl: document.location.origin + '/wp-json/allocine/reservation/remove',
+	listUrl: document.location.origin + '/sitevox/wp-json/allocine/reservation/list',
+	removeUrl: document.location.origin + '/sitevox/wp-json/allocine/reservation/remove',
     films : new Map(),
     selectedSeance: '',
     nbReservations: 0,

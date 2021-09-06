@@ -78,77 +78,6 @@ run_wp_allocine();
 
 
 
-
-function acp_get_xml_info()
-{
-
-	return apply_filters(
-		'acp_xml_infos',
-		array()
-	);
-
-}
-
-
-// build the array
-function acp_make_xml_infos( $XMLI )
-{
-
-	$XMLI = array(
-		'id'                => 'xml_url',
-		'label'             => __( 'XML URL', 'allocine-process' ),
-		'class'             => 'XML',
-		'description'       => __( 'Entrer l\'url du fichier xml ', 'allocine-process' ),
-		'priority'          => 10,
-		'type'              => 'text',
-		'default'           => '',
-		'sanitize_callback' => 'sanitize_text_field',
-	);
-	return $XMLI;
-
-}
-
-add_filter( 'acp_xml_infos', 'acp_make_xml_infos', 10, 1 );
-
-// add the entry to the wp customize menu
-function acp_xml_customizer_settings( $wp_customize )
-{
-
-    $xml_infos = acp_get_xml_info();
-
-    if ( ! empty( $xml_infos ) ) {
-		$wp_customize->add_section(
-            'allocine_process',
-            array(
-                'title'          => __( 'URL du fichier XML Allociné' ),
-                'priority'       => 160,
-                'capability'     => 'edit_theme_options',
-            )
-		);
-    }
-
-    $wp_customize->add_setting(
-        $xml_infos['id'],
-        array(
-            'default'           => '',
-            'sanitize_callback' => $xml_infos['sanitize_callback'],
-        )
-    );
-
-    $wp_customize->add_control(
-        $xml_infos['id'],
-        array(
-            'type'        => $xml_infos['type'],
-            'priority'    => $xml_infos['priority'],
-            'section'     => 'allocine_process',
-            'label'       => $xml_infos['label'],
-            'description' => $xml_infos['description'],
-        )
-    );
-}
-
-add_action( 'customize_register', 'acp_xml_customizer_settings' );
-
 // register the script for the shortcode
 function acp_scripts() {
     wp_enqueue_script('jquery');
@@ -171,11 +100,8 @@ add_action( 'wp_enqueue_scripts', 'acp_scripts' );
 // function called by the shortcode
 function acp_shortcode_call()
 {
-    $XML = acp_get_xml_info();
-
     error_log('-----------');
-    error_log($XML['id']);
-    error_log(get_theme_mod($XML['id']));
+    error_log(AVTools::settings("wp_allocine_api_url"));
     // https://api.levox.fr/allocineseances.xml
     $data = file_get_contents(AVTools::settings("wp_allocine_api_url"));
 

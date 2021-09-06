@@ -48,29 +48,17 @@ CREATE TABLE IF NOT EXISTS wp_allocine_reservations (
   
     - Enable the plugin.
 
-5. Change the path in reservation-controller.js
-    bookingUrl: 'https://www.nouveausite.levox.fr/wp-json/allocine/reservation/add',
+5. Mettre les settings à jour dans la table de l'admin Allocine
+-> Jauge
+-> Url vers le xml d'allociné
 
-comme dans le fichier 
-    listUrl: 'https://www.nouveausite.levox.fr/wp-json/allocine/reservation/list',
-    removeUrl: 'https://www.nouveausite.levox.fr/wp-json/allocine/reservation/remove',
-
-6. Change wp_config.php
-Enlever les options de debug
-
-7. Fixer la jauge dans allocine-process.php 
-define( 'MAX_USERS_RESERVATION', 70 );
-
-8. Use the plugin
+6. Use the plugin
 
     - In the WordPress personalisation menu look for the URL du fichier XML Allociné section and then enter there the url to your own Allociné exported XML.
 
     - On the desired page, add a shortcode block and enter the code \[acpsc\].
 
     - Good job you're all set up !
-
-
-    Try to manually fix the DB
 
 
 
