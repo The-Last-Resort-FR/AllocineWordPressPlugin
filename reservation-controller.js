@@ -29,7 +29,7 @@ var reservationController =
 
             let form =  '<div id="bookingForm">';
              form += '   <fieldset>';
-             form += '      <legend>Reserver:<b>'+selectedFilm.title+'</b> pour le '+reservationController.selectedHoraire.horaireToShow+'</legend>'
+             form += '      <legend>Réservez: <b>'+selectedFilm.title+'</b> pour le '+reservationController.selectedHoraire.horaireToShow+'</legend>'
              form += '      <label for="clientName">Nom</label><br>';
              form += '      <input type="text" name="clientName"></input><br>';
              form += '      <label for="clientEmail">Email</label><br>';
